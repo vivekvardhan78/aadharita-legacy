@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Target, Eye, Sparkles, Award, Users, Code, Lightbulb, Heart } from 'lucide-react';
+import { Target, Eye, Sparkles, Award, Lightbulb, Users, Code, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
+import CollegeBrandingBar from '@/components/CollegeBrandingBar';
 import Footer from '@/components/Footer';
 import GlassCard from '@/components/GlassCard';
+import ParticleBackground from '@/components/ParticleBackground';
 import { getSettings, initializeStorage } from '@/lib/storage';
 import type { AboutContent } from '@/lib/storage';
 
@@ -24,19 +27,14 @@ const About = () => {
     { icon: Heart, title: 'Passion', description: 'Fueled by love for technology and learning.' },
   ];
 
-  const team = [
-    { name: 'Dr. Arun Sharma', role: 'Faculty Advisor', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200' },
-    { name: 'Priya Mehta', role: 'General Secretary', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200' },
-    { name: 'Rahul Kumar', role: 'Technical Head', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200' },
-    { name: 'Sneha Reddy', role: 'Events Coordinator', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200' },
-  ];
-
   return (
     <div className="min-h-screen bg-background">
+      <ParticleBackground />
       <Navigation />
+      <CollegeBrandingBar />
 
       {/* Hero */}
-      <section className="pt-32 pb-16 relative">
+      <section className="pt-44 pb-16 relative">
         <div className="absolute inset-0 bg-grid-pattern opacity-20" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
@@ -129,35 +127,25 @@ const About = () => {
         </div>
       </section>
 
-      {/* Team */}
+      {/* Team CTA */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <h2 className="font-orbitron text-3xl font-bold text-center mb-4">
-            <span className="gradient-text">Meet the Team</span>
-          </h2>
-          <p className="font-rajdhani text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
-            The passionate individuals behind AADHRITA 2026.
-          </p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            {team.map((member, index) => (
-              <GlassCard
-                key={member.name}
-                hover
-                className="p-6 text-center opacity-0 animate-scale-in"
-                style={{ animationDelay: `${index * 100}ms` } as React.CSSProperties}
-              >
-                <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden neon-border p-0.5">
-                  <img
-                    src={member.img}
-                    alt={member.name}
-                    className="w-full h-full object-cover rounded-full"
-                  />
-                </div>
-                <h3 className="font-orbitron text-lg font-bold text-foreground">{member.name}</h3>
-                <p className="font-rajdhani text-sm text-primary">{member.role}</p>
-              </GlassCard>
-            ))}
-          </div>
+          <GlassCard className="p-8 md:p-12 text-center max-w-3xl mx-auto">
+            <h2 className="font-orbitron text-2xl md:text-3xl font-bold mb-4 neon-text">
+              Meet Our Team
+            </h2>
+            <p className="font-rajdhani text-lg text-muted-foreground mb-6 max-w-xl mx-auto">
+              Get to know the passionate individuals working tirelessly to make AADHRITA 2026 a grand success.
+            </p>
+            <Link 
+              to="/team"
+              className="inline-block px-8 py-3 font-rajdhani font-bold bg-primary text-primary-foreground 
+                rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_hsl(var(--neon-cyan)/0.5)]
+                hover:scale-105 active:scale-95"
+            >
+              View Team
+            </Link>
+          </GlassCard>
         </div>
       </section>
 

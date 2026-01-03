@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Bell, AlertCircle, Info, Star } from 'lucide-react';
 import Navigation from '@/components/Navigation';
+import CollegeBrandingBar from '@/components/CollegeBrandingBar';
 import Footer from '@/components/Footer';
 import GlassCard from '@/components/GlassCard';
+import ParticleBackground from '@/components/ParticleBackground';
 import { getAnnouncements, initializeStorage } from '@/lib/storage';
 import type { Announcement } from '@/lib/storage';
 
@@ -35,10 +37,12 @@ const Announcements = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ParticleBackground />
       <Navigation />
+      <CollegeBrandingBar />
 
       {/* Hero */}
-      <section className="pt-32 pb-16 relative">
+      <section className="pt-44 pb-16 relative">
         <div className="absolute inset-0 bg-grid-pattern opacity-20" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
