@@ -9,6 +9,8 @@ export interface Event {
   time: string;
   posterUrl: string;
   category: string;
+  logoUrl?: string;
+  accentColor?: string;
 }
 
 export interface Announcement {
@@ -40,9 +42,34 @@ export interface AboutContent {
   highlights: string[];
 }
 
+export interface CollegeBranding {
+  collegeName: string;
+  location: string;
+  logoUrl: string;
+}
+
+export interface Sponsor {
+  id: string;
+  name: string;
+  logoUrl: string;
+  category: 'Title' | 'Gold' | 'Silver' | 'Supporter';
+  websiteUrl?: string;
+}
+
+export interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  department?: string;
+  phone: string;
+  photoUrl: string;
+  type: 'student' | 'faculty';
+}
+
 export interface SiteSettings {
   heroContent: HeroContent;
   aboutContent: AboutContent;
+  collegeBranding: CollegeBranding;
 }
 
 const STORAGE_KEYS = {
@@ -50,6 +77,8 @@ const STORAGE_KEYS = {
   ANNOUNCEMENTS: 'aadhrita_announcements',
   GALLERY: 'aadhrita_gallery',
   SETTINGS: 'aadhrita_settings',
+  SPONSORS: 'aadhrita_sponsors',
+  TEAM: 'aadhrita_team',
   ADMIN_SESSION: 'aadhrita_admin_session',
 };
 
@@ -76,6 +105,12 @@ const defaultAboutContent: AboutContent = {
   ],
 };
 
+const defaultCollegeBranding: CollegeBranding = {
+  collegeName: 'Maharaj Vijayaram Gajapathi Raj College of Engineering',
+  location: 'Vizianagaram, Andhra Pradesh',
+  logoUrl: '',
+};
+
 const defaultEvents: Event[] = [
   {
     id: '1',
@@ -86,6 +121,8 @@ const defaultEvents: Event[] = [
     time: '10:00 AM',
     posterUrl: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800',
     category: 'Coding',
+    logoUrl: '',
+    accentColor: '#00d4ff',
   },
   {
     id: '2',
@@ -96,6 +133,8 @@ const defaultEvents: Event[] = [
     time: '2:00 PM',
     posterUrl: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800',
     category: 'Robotics',
+    logoUrl: '',
+    accentColor: '#a855f7',
   },
   {
     id: '3',
@@ -106,6 +145,8 @@ const defaultEvents: Event[] = [
     time: '3:00 PM',
     posterUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800',
     category: 'Quiz',
+    logoUrl: '',
+    accentColor: '#22c55e',
   },
   {
     id: '4',
@@ -116,6 +157,8 @@ const defaultEvents: Event[] = [
     time: '10:00 AM',
     posterUrl: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800',
     category: 'Design',
+    logoUrl: '',
+    accentColor: '#f59e0b',
   },
   {
     id: '5',
@@ -126,6 +169,8 @@ const defaultEvents: Event[] = [
     time: '11:00 AM',
     posterUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800',
     category: 'Puzzle',
+    logoUrl: '',
+    accentColor: '#ec4899',
   },
   {
     id: '6',
@@ -136,6 +181,8 @@ const defaultEvents: Event[] = [
     time: '9:00 AM',
     posterUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800',
     category: 'AI/ML',
+    logoUrl: '',
+    accentColor: '#06b6d4',
   },
 ];
 
@@ -172,6 +219,24 @@ const defaultGallery: GalleryImage[] = [
   { id: '6', url: 'https://images.unsplash.com/photo-1559223607-a43c990c692c?w=800', caption: 'Cultural Night' },
 ];
 
+const defaultSponsors: Sponsor[] = [
+  { id: '1', name: 'TechCorp India', logoUrl: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=400', category: 'Title', websiteUrl: 'https://example.com' },
+  { id: '2', name: 'InnovateLabs', logoUrl: 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=400', category: 'Gold', websiteUrl: 'https://example.com' },
+  { id: '3', name: 'FutureTech Solutions', logoUrl: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400', category: 'Gold', websiteUrl: 'https://example.com' },
+  { id: '4', name: 'ByteWise', logoUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400', category: 'Silver', websiteUrl: 'https://example.com' },
+  { id: '5', name: 'CloudNine Systems', logoUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400', category: 'Silver', websiteUrl: 'https://example.com' },
+  { id: '6', name: 'StartupHub', logoUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400', category: 'Supporter', websiteUrl: 'https://example.com' },
+];
+
+const defaultTeam: TeamMember[] = [
+  { id: '1', name: 'Rahul Sharma', role: 'Chief Coordinator', phone: '+91 98765 43210', photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400', type: 'student' },
+  { id: '2', name: 'Priya Reddy', role: 'Technical Head', phone: '+91 98765 43211', photoUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400', type: 'student' },
+  { id: '3', name: 'Arun Kumar', role: 'Events Coordinator', phone: '+91 98765 43212', photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400', type: 'student' },
+  { id: '4', name: 'Sneha Patel', role: 'Marketing Head', phone: '+91 98765 43213', photoUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400', type: 'student' },
+  { id: '5', name: 'Dr. K. Ramesh', role: 'Faculty Advisor', department: 'Computer Science', phone: '+91 98765 43214', photoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400', type: 'faculty' },
+  { id: '6', name: 'Prof. S. Lakshmi', role: 'Technical Advisor', department: 'Electronics', phone: '+91 98765 43215', photoUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400', type: 'faculty' },
+];
+
 // Initialize storage with default data if empty
 export const initializeStorage = (): void => {
   if (!localStorage.getItem(STORAGE_KEYS.EVENTS)) {
@@ -183,10 +248,17 @@ export const initializeStorage = (): void => {
   if (!localStorage.getItem(STORAGE_KEYS.GALLERY)) {
     localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(defaultGallery));
   }
+  if (!localStorage.getItem(STORAGE_KEYS.SPONSORS)) {
+    localStorage.setItem(STORAGE_KEYS.SPONSORS, JSON.stringify(defaultSponsors));
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.TEAM)) {
+    localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(defaultTeam));
+  }
   if (!localStorage.getItem(STORAGE_KEYS.SETTINGS)) {
     localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify({
       heroContent: defaultHeroContent,
       aboutContent: defaultAboutContent,
+      collegeBranding: defaultCollegeBranding,
     }));
   }
 };
@@ -269,12 +341,59 @@ export const deleteGalleryImage = (id: string): void => {
   saveGallery(gallery);
 };
 
+// Sponsors CRUD
+export const getSponsors = (): Sponsor[] => {
+  const data = localStorage.getItem(STORAGE_KEYS.SPONSORS);
+  return data ? JSON.parse(data) : defaultSponsors;
+};
+
+export const saveSponsors = (sponsors: Sponsor[]): void => {
+  localStorage.setItem(STORAGE_KEYS.SPONSORS, JSON.stringify(sponsors));
+};
+
+export const addSponsor = (sponsor: Omit<Sponsor, 'id'>): Sponsor => {
+  const sponsors = getSponsors();
+  const newSponsor = { ...sponsor, id: Date.now().toString() };
+  sponsors.push(newSponsor);
+  saveSponsors(sponsors);
+  return newSponsor;
+};
+
+export const deleteSponsor = (id: string): void => {
+  const sponsors = getSponsors().filter(s => s.id !== id);
+  saveSponsors(sponsors);
+};
+
+// Team CRUD
+export const getTeam = (): TeamMember[] => {
+  const data = localStorage.getItem(STORAGE_KEYS.TEAM);
+  return data ? JSON.parse(data) : defaultTeam;
+};
+
+export const saveTeam = (team: TeamMember[]): void => {
+  localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(team));
+};
+
+export const addTeamMember = (member: Omit<TeamMember, 'id'>): TeamMember => {
+  const team = getTeam();
+  const newMember = { ...member, id: Date.now().toString() };
+  team.push(newMember);
+  saveTeam(team);
+  return newMember;
+};
+
+export const deleteTeamMember = (id: string): void => {
+  const team = getTeam().filter(m => m.id !== id);
+  saveTeam(team);
+};
+
 // Settings
 export const getSettings = (): SiteSettings => {
   const data = localStorage.getItem(STORAGE_KEYS.SETTINGS);
   return data ? JSON.parse(data) : {
     heroContent: defaultHeroContent,
     aboutContent: defaultAboutContent,
+    collegeBranding: defaultCollegeBranding,
   };
 };
 
@@ -292,6 +411,17 @@ export const updateAboutContent = (about: AboutContent): void => {
   const settings = getSettings();
   settings.aboutContent = about;
   saveSettings(settings);
+};
+
+export const updateCollegeBranding = (branding: CollegeBranding): void => {
+  const settings = getSettings();
+  settings.collegeBranding = branding;
+  saveSettings(settings);
+};
+
+export const getCollegeBranding = (): CollegeBranding => {
+  const settings = getSettings();
+  return settings.collegeBranding || defaultCollegeBranding;
 };
 
 // Admin Authentication

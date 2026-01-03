@@ -5,6 +5,8 @@ import { Menu, X, Sparkles } from 'lucide-react';
 const navLinks = [
   { path: '/', label: 'Home' },
   { path: '/events', label: 'Events' },
+  { path: '/sponsors', label: 'Sponsors' },
+  { path: '/team', label: 'Team' },
   { path: '/gallery', label: 'Gallery' },
   { path: '/announcements', label: 'Announcements' },
   { path: '/about', label: 'About' },
@@ -27,12 +29,12 @@ const Navigation = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`relative px-4 py-2 font-rajdhani font-medium text-sm tracking-wide transition-all duration-300 rounded-lg
+                className={`relative px-3 py-2 font-rajdhani font-medium text-sm tracking-wide transition-all duration-300 rounded-lg
                   ${location.pathname === link.path
                     ? 'text-primary'
                     : 'text-foreground/70 hover:text-foreground'
@@ -47,7 +49,7 @@ const Navigation = () => {
           </div>
 
           {/* Register Button - Desktop */}
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <button className="px-6 py-2 font-rajdhani font-semibold text-sm bg-primary text-primary-foreground rounded-lg
               transition-all duration-300 hover:shadow-[0_0_20px_hsl(var(--neon-cyan)/0.5)] 
               hover:scale-105 active:scale-95">
@@ -58,7 +60,7 @@ const Navigation = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-foreground hover:text-primary transition-colors"
+            className="lg:hidden p-2 text-foreground hover:text-primary transition-colors"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -66,8 +68,8 @@ const Navigation = () => {
 
         {/* Mobile Navigation */}
         <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out
-            ${isOpen ? 'max-h-96 pb-4' : 'max-h-0'}`}
+          className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out
+            ${isOpen ? 'max-h-[500px] pb-4' : 'max-h-0'}`}
         >
           <div className="flex flex-col gap-2 pt-2">
             {navLinks.map((link) => (

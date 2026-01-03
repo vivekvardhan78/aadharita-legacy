@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Search, Filter, X } from 'lucide-react';
+import { Search, Filter, X, Calendar, Clock } from 'lucide-react';
 import Navigation from '@/components/Navigation';
+import CollegeBrandingBar from '@/components/CollegeBrandingBar';
 import Footer from '@/components/Footer';
 import EventCard from '@/components/EventCard';
 import GlassCard from '@/components/GlassCard';
+import ParticleBackground from '@/components/ParticleBackground';
 import { getEvents, initializeStorage } from '@/lib/storage';
 import type { Event } from '@/lib/storage';
 
@@ -43,10 +45,12 @@ const Events = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ParticleBackground />
       <Navigation />
+      <CollegeBrandingBar />
 
       {/* Hero */}
-      <section className="pt-32 pb-16 relative">
+      <section className="pt-44 pb-16 relative">
         <div className="absolute inset-0 bg-grid-pattern opacity-20" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
@@ -62,7 +66,7 @@ const Events = () => {
       </section>
 
       {/* Filters */}
-      <section className="py-8 border-y border-border/30 bg-card/20 backdrop-blur-sm sticky top-16 md:top-20 z-40">
+      <section className="py-8 border-y border-border/30 bg-card/20 backdrop-blur-sm sticky top-28 md:top-32 z-40">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center gap-4">
             {/* Search */}
@@ -123,7 +127,22 @@ const Events = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
           onClick={() => setSelectedEvent(null)}>
           <GlassCard className="max-w-2xl w-full max-h-[90vh] overflow-y-auto p-0" onClick={(e) => e.stopPropagation()}>
-            <div className="relative h-64 overflow-hidden rounded-t-2xl">
+            {/* Accent Line */}
+            <div 
+              className="h-1 w-full rounded-t-2xl" 
+              style={{ backgroundColor: selectedEvent.accentColor || '#00d4ff' }}
+            />
+            <div className="relative h-64 overflow-hidden">
+              {/* Event Logo */}
+              {selectedEvent.logoUrl && (
+                <div className="absolute top-4 left-4 z-10">
+                  <img 
+                    src={selectedEvent.logoUrl} 
+                    alt={`${selectedEvent.name} logo`}
+                    className="h-16 w-16 object-contain bg-background/80 backdrop-blur-sm rounded-xl p-2"
+                  />
+                </div>
+              )}
               <img
                 src={selectedEvent.posterUrl}
                 alt={selectedEvent.name}
@@ -136,25 +155,35 @@ const Events = () => {
               >
                 <X className="w-5 h-5" />
               </button>
-              <span className="absolute bottom-4 left-6 px-4 py-1 text-sm font-rajdhani font-semibold 
-                bg-secondary/80 backdrop-blur-sm text-secondary-foreground rounded-full">
+              <span 
+                className="absolute bottom-4 left-6 px-4 py-1 text-sm font-rajdhani font-semibold 
+                  backdrop-blur-sm text-white rounded-full"
+                style={{ backgroundColor: `${selectedEvent.accentColor || '#00d4ff'}cc` }}
+              >
                 {selectedEvent.category}
               </span>
             </div>
             
             <div className="p-6 space-y-6">
-              <h2 className="font-orbitron text-2xl font-bold neon-text">{selectedEvent.name}</h2>
+              <h2 
+                className="font-orbitron text-2xl font-bold"
+                style={{ color: selectedEvent.accentColor || 'hsl(var(--primary))' }}
+              >
+                {selectedEvent.name}
+              </h2>
               
               <p className="font-rajdhani text-muted-foreground">{selectedEvent.description}</p>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="glass-card p-4 text-center">
+                  <Calendar className="w-5 h-5 mx-auto mb-1" style={{ color: selectedEvent.accentColor }} />
                   <div className="text-sm text-muted-foreground font-rajdhani">Date</div>
-                  <div className="font-semibold text-primary">{selectedEvent.date}</div>
+                  <div className="font-semibold" style={{ color: selectedEvent.accentColor }}>{selectedEvent.date}</div>
                 </div>
                 <div className="glass-card p-4 text-center">
+                  <Clock className="w-5 h-5 mx-auto mb-1" style={{ color: selectedEvent.accentColor }} />
                   <div className="text-sm text-muted-foreground font-rajdhani">Time</div>
-                  <div className="font-semibold text-primary">{selectedEvent.time}</div>
+                  <div className="font-semibold" style={{ color: selectedEvent.accentColor }}>{selectedEvent.time}</div>
                 </div>
               </div>
 
@@ -163,15 +192,18 @@ const Events = () => {
                 <ul className="space-y-2">
                   {selectedEvent.rules.map((rule, index) => (
                     <li key={index} className="flex items-start gap-2 font-rajdhani text-muted-foreground">
-                      <span className="text-primary mt-1">▹</span>
+                      <span style={{ color: selectedEvent.accentColor }} className="mt-1">▹</span>
                       {rule}
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <button className="w-full py-4 font-rajdhani font-bold text-lg bg-primary text-primary-foreground 
-                rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_hsl(var(--neon-cyan)/0.5)]">
+              <button 
+                className="w-full py-4 font-rajdhani font-bold text-lg text-white 
+                  rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,212,255,0.5)]"
+                style={{ backgroundColor: selectedEvent.accentColor || 'hsl(var(--primary))' }}
+              >
                 Register for Event
               </button>
             </div>

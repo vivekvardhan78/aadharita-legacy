@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { X, ZoomIn } from 'lucide-react';
 import Navigation from '@/components/Navigation';
+import CollegeBrandingBar from '@/components/CollegeBrandingBar';
 import Footer from '@/components/Footer';
+import ParticleBackground from '@/components/ParticleBackground';
 import { getGallery, initializeStorage } from '@/lib/storage';
 import type { GalleryImage } from '@/lib/storage';
 
@@ -16,10 +18,12 @@ const Gallery = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ParticleBackground />
       <Navigation />
+      <CollegeBrandingBar />
 
       {/* Hero */}
-      <section className="pt-32 pb-16 relative">
+      <section className="pt-44 pb-16 relative">
         <div className="absolute inset-0 bg-grid-pattern opacity-20" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-3xl mx-auto">

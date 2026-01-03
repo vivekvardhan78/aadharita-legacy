@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, Calendar, Image, Bell, Settings, LogOut, Plus, Trash2, Edit2, Save, X, Home, Info
+  LayoutDashboard, Calendar, Image, Bell, Settings, LogOut, Plus, Trash2, Edit2, Save, X, Home, Info,
+  Building2, Users, GraduationCap, Award, Palette
 } from 'lucide-react';
 import GlassCard from '@/components/GlassCard';
 import { useToast } from '@/hooks/use-toast';
 import {
   isAdminAuthenticated, adminLogout, getEvents, saveEvents, getAnnouncements, saveAnnouncements,
-  getGallery, saveGallery, getSettings, updateHeroContent, updateAboutContent,
-  type Event, type Announcement, type GalleryImage, type HeroContent, type AboutContent
+  getGallery, saveGallery, getSettings, updateHeroContent, updateAboutContent, updateCollegeBranding,
+  getSponsors, saveSponsors, getTeam, saveTeam,
+  type Event, type Announcement, type GalleryImage, type HeroContent, type AboutContent, 
+  type CollegeBranding, type Sponsor, type TeamMember
 } from '@/lib/storage';
 
-type TabType = 'dashboard' | 'events' | 'gallery' | 'announcements' | 'hero' | 'about';
+type TabType = 'dashboard' | 'events' | 'gallery' | 'announcements' | 'hero' | 'about' | 'college' | 'sponsors' | 'team';
 
 const Panel = () => {
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
@@ -24,10 +27,15 @@ const Panel = () => {
   const [gallery, setGallery] = useState<GalleryImage[]>([]);
   const [heroContent, setHeroContent] = useState<HeroContent | null>(null);
   const [aboutContent, setAboutContent] = useState<AboutContent | null>(null);
+  const [collegeBranding, setCollegeBranding] = useState<CollegeBranding | null>(null);
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  const [team, setTeam] = useState<TeamMember[]>([]);
 
   // Edit states
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [editingAnnouncement, setEditingAnnouncement] = useState<Announcement | null>(null);
+  const [editingSponsor, setEditingSponsor] = useState<Sponsor | null>(null);
+  const [editingTeamMember, setEditingTeamMember] = useState<TeamMember | null>(null);
   const [newGalleryUrl, setNewGalleryUrl] = useState('');
   const [newGalleryCaption, setNewGalleryCaption] = useState('');
 
@@ -46,6 +54,9 @@ const Panel = () => {
     const settings = getSettings();
     setHeroContent(settings.heroContent);
     setAboutContent(settings.aboutContent);
+    setCollegeBranding(settings.collegeBranding);
+    setSponsors(getSponsors());
+    setTeam(getTeam());
   };
 
   const handleLogout = () => {
@@ -56,11 +67,14 @@ const Panel = () => {
 
   const tabs = [
     { id: 'dashboard' as TabType, label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'college' as TabType, label: 'College', icon: Building2 },
     { id: 'events' as TabType, label: 'Events', icon: Calendar },
     { id: 'gallery' as TabType, label: 'Gallery', icon: Image },
     { id: 'announcements' as TabType, label: 'Announcements', icon: Bell },
-    { id: 'hero' as TabType, label: 'Hero Section', icon: Home },
-    { id: 'about' as TabType, label: 'About Page', icon: Info },
+    { id: 'sponsors' as TabType, label: 'Sponsors', icon: Award },
+    { id: 'team' as TabType, label: 'Team', icon: Users },
+    { id: 'hero' as TabType, label: 'Hero', icon: Home },
+    { id: 'about' as TabType, label: 'About', icon: Info },
   ];
 
   // Event handlers
@@ -134,28 +148,73 @@ const Panel = () => {
     toast({ title: 'About page updated!' });
   };
 
+  // College branding handlers
+  const saveCollege = () => {
+    if (!collegeBranding) return;
+    updateCollegeBranding(collegeBranding);
+    toast({ title: 'College branding updated!' });
+  };
+
+  // Sponsor handlers
+  const saveSponsor = () => {
+    if (!editingSponsor) return;
+    const updatedSponsors = editingSponsor.id
+      ? sponsors.map(s => s.id === editingSponsor.id ? editingSponsor : s)
+      : [...sponsors, { ...editingSponsor, id: Date.now().toString() }];
+    saveSponsors(updatedSponsors);
+    setSponsors(updatedSponsors);
+    setEditingSponsor(null);
+    toast({ title: 'Sponsor saved!' });
+  };
+
+  const deleteSponsor = (id: string) => {
+    const updated = sponsors.filter(s => s.id !== id);
+    saveSponsors(updated);
+    setSponsors(updated);
+    toast({ title: 'Sponsor deleted' });
+  };
+
+  // Team handlers
+  const saveTeamMember = () => {
+    if (!editingTeamMember) return;
+    const updatedTeam = editingTeamMember.id
+      ? team.map(m => m.id === editingTeamMember.id ? editingTeamMember : m)
+      : [...team, { ...editingTeamMember, id: Date.now().toString() }];
+    saveTeam(updatedTeam);
+    setTeam(updatedTeam);
+    setEditingTeamMember(null);
+    toast({ title: 'Team member saved!' });
+  };
+
+  const deleteTeamMember = (id: string) => {
+    const updated = team.filter(m => m.id !== id);
+    saveTeam(updated);
+    setTeam(updated);
+    toast({ title: 'Team member deleted' });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 min-h-screen glass-card rounded-none border-r border-border/30 p-4 hidden md:block">
+        <aside className="w-64 min-h-screen glass-card rounded-none border-r border-border/30 p-4 hidden lg:block">
           <div className="mb-8">
             <h1 className="font-orbitron text-xl font-bold gradient-text">Admin Panel</h1>
             <p className="font-rajdhani text-sm text-muted-foreground">AADHRITA 2026</p>
           </div>
 
-          <nav className="space-y-2">
+          <nav className="space-y-1">
             {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 font-rajdhani font-medium rounded-xl transition-all
+                className={`w-full flex items-center gap-3 px-4 py-2.5 font-rajdhani font-medium rounded-xl transition-all text-sm
                   ${activeTab === tab.id
                     ? 'bg-primary/10 text-primary neon-border'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                   }`}
               >
-                <tab.icon className="w-5 h-5" />
+                <tab.icon className="w-4 h-4" />
                 {tab.label}
               </button>
             ))}
@@ -163,34 +222,34 @@ const Panel = () => {
 
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 mt-8 font-rajdhani font-medium 
-              text-destructive hover:bg-destructive/10 rounded-xl transition-all"
+            className="w-full flex items-center gap-3 px-4 py-2.5 mt-8 font-rajdhani font-medium 
+              text-destructive hover:bg-destructive/10 rounded-xl transition-all text-sm"
           >
-            <LogOut className="w-5 h-5" />
+            <LogOut className="w-4 h-4" />
             Logout
           </button>
         </aside>
 
         {/* Mobile Nav */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 glass-card rounded-none border-t border-border/30 p-2">
-          <div className="flex justify-around">
-            {tabs.slice(0, 4).map(tab => (
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 glass-card rounded-none border-t border-border/30 p-2">
+          <div className="flex justify-around overflow-x-auto">
+            {tabs.slice(0, 5).map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`p-3 rounded-xl ${activeTab === tab.id ? 'text-primary bg-primary/10' : 'text-muted-foreground'}`}
+                className={`p-2 rounded-xl flex-shrink-0 ${activeTab === tab.id ? 'text-primary bg-primary/10' : 'text-muted-foreground'}`}
               >
                 <tab.icon className="w-5 h-5" />
               </button>
             ))}
-            <button onClick={handleLogout} className="p-3 text-destructive">
+            <button onClick={handleLogout} className="p-2 text-destructive flex-shrink-0">
               <LogOut className="w-5 h-5" />
             </button>
           </div>
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 p-6 pb-24 md:pb-6">
+        <main className="flex-1 p-6 pb-24 lg:pb-6 overflow-y-auto">
           {/* Dashboard */}
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
@@ -199,24 +258,72 @@ const Panel = () => {
                 <GlassCard className="p-6">
                   <Calendar className="w-8 h-8 text-primary mb-2" />
                   <div className="font-orbitron text-3xl font-bold text-foreground">{events.length}</div>
-                  <div className="font-rajdhani text-muted-foreground">Total Events</div>
+                  <div className="font-rajdhani text-muted-foreground">Events</div>
                 </GlassCard>
                 <GlassCard className="p-6">
-                  <Bell className="w-8 h-8 text-secondary mb-2" />
-                  <div className="font-orbitron text-3xl font-bold text-foreground">{announcements.length}</div>
-                  <div className="font-rajdhani text-muted-foreground">Announcements</div>
+                  <Award className="w-8 h-8 text-secondary mb-2" />
+                  <div className="font-orbitron text-3xl font-bold text-foreground">{sponsors.length}</div>
+                  <div className="font-rajdhani text-muted-foreground">Sponsors</div>
                 </GlassCard>
                 <GlassCard className="p-6">
-                  <Image className="w-8 h-8 text-accent mb-2" />
+                  <Users className="w-8 h-8 text-accent mb-2" />
+                  <div className="font-orbitron text-3xl font-bold text-foreground">{team.length}</div>
+                  <div className="font-rajdhani text-muted-foreground">Team Members</div>
+                </GlassCard>
+                <GlassCard className="p-6">
+                  <Image className="w-8 h-8 text-primary mb-2" />
                   <div className="font-orbitron text-3xl font-bold text-foreground">{gallery.length}</div>
                   <div className="font-rajdhani text-muted-foreground">Gallery Images</div>
                 </GlassCard>
-                <GlassCard className="p-6">
-                  <Settings className="w-8 h-8 text-primary mb-2" />
-                  <div className="font-orbitron text-3xl font-bold text-foreground">Active</div>
-                  <div className="font-rajdhani text-muted-foreground">Site Status</div>
-                </GlassCard>
               </div>
+            </div>
+          )}
+
+          {/* College Branding */}
+          {activeTab === 'college' && collegeBranding && (
+            <div className="space-y-6">
+              <h2 className="font-orbitron text-2xl font-bold gradient-text">College Branding</h2>
+              <GlassCard className="p-6 space-y-4">
+                <div>
+                  <label className="block font-rajdhani text-sm text-muted-foreground mb-2">College Name</label>
+                  <input
+                    type="text"
+                    placeholder="College Name"
+                    value={collegeBranding.collegeName}
+                    onChange={e => setCollegeBranding({ ...collegeBranding, collegeName: e.target.value })}
+                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                  />
+                </div>
+                <div>
+                  <label className="block font-rajdhani text-sm text-muted-foreground mb-2">Location</label>
+                  <input
+                    type="text"
+                    placeholder="Location"
+                    value={collegeBranding.location}
+                    onChange={e => setCollegeBranding({ ...collegeBranding, location: e.target.value })}
+                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                  />
+                </div>
+                <div>
+                  <label className="block font-rajdhani text-sm text-muted-foreground mb-2">College Logo URL</label>
+                  <input
+                    type="text"
+                    placeholder="Logo URL"
+                    value={collegeBranding.logoUrl}
+                    onChange={e => setCollegeBranding({ ...collegeBranding, logoUrl: e.target.value })}
+                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                  />
+                </div>
+                {collegeBranding.logoUrl && (
+                  <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-xl">
+                    <img src={collegeBranding.logoUrl} alt="Preview" className="h-16 w-auto object-contain" />
+                    <span className="font-rajdhani text-sm text-muted-foreground">Logo Preview</span>
+                  </div>
+                )}
+                <button onClick={saveCollege} className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-rajdhani font-semibold">
+                  <Save className="w-4 h-4" /> Save Changes
+                </button>
+              </GlassCard>
             </div>
           )}
 
@@ -226,7 +333,7 @@ const Panel = () => {
               <div className="flex items-center justify-between">
                 <h2 className="font-orbitron text-2xl font-bold gradient-text">Manage Events</h2>
                 <button
-                  onClick={() => setEditingEvent({ id: '', name: '', description: '', rules: [], date: '', time: '', posterUrl: '', category: '' })}
+                  onClick={() => setEditingEvent({ id: '', name: '', description: '', rules: [], date: '', time: '', posterUrl: '', category: '', logoUrl: '', accentColor: '#00d4ff' })}
                   className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl font-rajdhani font-semibold"
                 >
                   <Plus className="w-4 h-4" /> Add Event
@@ -271,13 +378,32 @@ const Panel = () => {
                     onChange={e => setEditingEvent({ ...editingEvent, description: e.target.value })}
                     className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani h-24"
                   />
-                  <input
-                    type="text"
-                    placeholder="Poster Image URL"
-                    value={editingEvent.posterUrl}
-                    onChange={e => setEditingEvent({ ...editingEvent, posterUrl: e.target.value })}
-                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
-                  />
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      placeholder="Poster Image URL"
+                      value={editingEvent.posterUrl}
+                      onChange={e => setEditingEvent({ ...editingEvent, posterUrl: e.target.value })}
+                      className="px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Event Logo URL"
+                      value={editingEvent.logoUrl || ''}
+                      onChange={e => setEditingEvent({ ...editingEvent, logoUrl: e.target.value })}
+                      className="px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                    />
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <label className="font-rajdhani text-sm text-muted-foreground">Accent Color:</label>
+                    <input
+                      type="color"
+                      value={editingEvent.accentColor || '#00d4ff'}
+                      onChange={e => setEditingEvent({ ...editingEvent, accentColor: e.target.value })}
+                      className="w-12 h-10 rounded-lg cursor-pointer border-0"
+                    />
+                    <span className="font-mono text-sm text-muted-foreground">{editingEvent.accentColor}</span>
+                  </div>
                   <textarea
                     placeholder="Rules (one per line)"
                     value={editingEvent.rules.join('\n')}
@@ -298,6 +424,10 @@ const Panel = () => {
               <div className="grid gap-4">
                 {events.map(event => (
                   <GlassCard key={event.id} className="p-4 flex items-center gap-4">
+                    <div 
+                      className="w-2 h-16 rounded-full" 
+                      style={{ backgroundColor: event.accentColor || '#00d4ff' }}
+                    />
                     <img src={event.posterUrl} alt={event.name} className="w-16 h-16 object-cover rounded-xl" />
                     <div className="flex-1">
                       <h3 className="font-orbitron font-bold text-foreground">{event.name}</h3>
@@ -435,6 +565,230 @@ const Panel = () => {
                     </button>
                   </GlassCard>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* Sponsors Management */}
+          {activeTab === 'sponsors' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="font-orbitron text-2xl font-bold gradient-text">Manage Sponsors</h2>
+                <button
+                  onClick={() => setEditingSponsor({ id: '', name: '', logoUrl: '', category: 'Gold', websiteUrl: '' })}
+                  className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl font-rajdhani font-semibold"
+                >
+                  <Plus className="w-4 h-4" /> Add Sponsor
+                </button>
+              </div>
+
+              {editingSponsor && (
+                <GlassCard className="p-6 space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      placeholder="Sponsor Name"
+                      value={editingSponsor.name}
+                      onChange={e => setEditingSponsor({ ...editingSponsor, name: e.target.value })}
+                      className="px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                    />
+                    <select
+                      value={editingSponsor.category}
+                      onChange={e => setEditingSponsor({ ...editingSponsor, category: e.target.value as Sponsor['category'] })}
+                      className="px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                    >
+                      <option value="Title">Title Sponsor</option>
+                      <option value="Gold">Gold Sponsor</option>
+                      <option value="Silver">Silver Sponsor</option>
+                      <option value="Supporter">Supporter</option>
+                    </select>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Logo URL"
+                    value={editingSponsor.logoUrl}
+                    onChange={e => setEditingSponsor({ ...editingSponsor, logoUrl: e.target.value })}
+                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Website URL (optional)"
+                    value={editingSponsor.websiteUrl || ''}
+                    onChange={e => setEditingSponsor({ ...editingSponsor, websiteUrl: e.target.value })}
+                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                  />
+                  <div className="flex gap-2">
+                    <button onClick={saveSponsor} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl font-rajdhani">
+                      <Save className="w-4 h-4" /> Save
+                    </button>
+                    <button onClick={() => setEditingSponsor(null)} className="flex items-center gap-2 px-4 py-2 bg-muted text-foreground rounded-xl font-rajdhani">
+                      <X className="w-4 h-4" /> Cancel
+                    </button>
+                  </div>
+                </GlassCard>
+              )}
+
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {sponsors.map(sponsor => (
+                  <GlassCard key={sponsor.id} className="p-4">
+                    <div className="flex items-start gap-4">
+                      <img src={sponsor.logoUrl} alt={sponsor.name} className="w-16 h-16 object-cover rounded-xl" />
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-orbitron font-bold text-foreground truncate">{sponsor.name}</h3>
+                        <span className={`inline-block mt-1 px-2 py-0.5 text-xs font-rajdhani font-semibold rounded-full
+                          ${sponsor.category === 'Title' ? 'bg-yellow-500/20 text-yellow-500' :
+                            sponsor.category === 'Gold' ? 'bg-yellow-400/20 text-yellow-400' :
+                            sponsor.category === 'Silver' ? 'bg-slate-400/20 text-slate-400' :
+                            'bg-rose-400/20 text-rose-400'}`}>
+                          {sponsor.category}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex justify-end gap-2 mt-4">
+                      <button onClick={() => setEditingSponsor(sponsor)} className="p-2 text-primary hover:bg-primary/10 rounded-lg">
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => deleteSponsor(sponsor.id)} className="p-2 text-destructive hover:bg-destructive/10 rounded-lg">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </GlassCard>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Team Management */}
+          {activeTab === 'team' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="font-orbitron text-2xl font-bold gradient-text">Manage Team</h2>
+                <button
+                  onClick={() => setEditingTeamMember({ id: '', name: '', role: '', department: '', phone: '', photoUrl: '', type: 'student' })}
+                  className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl font-rajdhani font-semibold"
+                >
+                  <Plus className="w-4 h-4" /> Add Member
+                </button>
+              </div>
+
+              {editingTeamMember && (
+                <GlassCard className="p-6 space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      placeholder="Name"
+                      value={editingTeamMember.name}
+                      onChange={e => setEditingTeamMember({ ...editingTeamMember, name: e.target.value })}
+                      className="px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                    />
+                    <select
+                      value={editingTeamMember.type}
+                      onChange={e => setEditingTeamMember({ ...editingTeamMember, type: e.target.value as 'student' | 'faculty' })}
+                      className="px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                    >
+                      <option value="student">Student Coordinator</option>
+                      <option value="faculty">Faculty Coordinator</option>
+                    </select>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      placeholder="Role"
+                      value={editingTeamMember.role}
+                      onChange={e => setEditingTeamMember({ ...editingTeamMember, role: e.target.value })}
+                      className="px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                    />
+                    {editingTeamMember.type === 'faculty' && (
+                      <input
+                        type="text"
+                        placeholder="Department"
+                        value={editingTeamMember.department || ''}
+                        onChange={e => setEditingTeamMember({ ...editingTeamMember, department: e.target.value })}
+                        className="px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                      />
+                    )}
+                    <input
+                      type="text"
+                      placeholder="Phone"
+                      value={editingTeamMember.phone}
+                      onChange={e => setEditingTeamMember({ ...editingTeamMember, phone: e.target.value })}
+                      className="px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Photo URL"
+                    value={editingTeamMember.photoUrl}
+                    onChange={e => setEditingTeamMember({ ...editingTeamMember, photoUrl: e.target.value })}
+                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                  />
+                  <div className="flex gap-2">
+                    <button onClick={saveTeamMember} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl font-rajdhani">
+                      <Save className="w-4 h-4" /> Save
+                    </button>
+                    <button onClick={() => setEditingTeamMember(null)} className="flex items-center gap-2 px-4 py-2 bg-muted text-foreground rounded-xl font-rajdhani">
+                      <X className="w-4 h-4" /> Cancel
+                    </button>
+                  </div>
+                </GlassCard>
+              )}
+
+              {/* Student Coordinators */}
+              <div>
+                <h3 className="font-orbitron text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                  <Users className="w-5 h-5 text-primary" /> Student Coordinators
+                </h3>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {team.filter(m => m.type === 'student').map(member => (
+                    <GlassCard key={member.id} className="p-4">
+                      <div className="flex items-center gap-4">
+                        <img src={member.photoUrl} alt={member.name} className="w-14 h-14 object-cover rounded-full" />
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-orbitron font-bold text-foreground text-sm truncate">{member.name}</h4>
+                          <p className="font-rajdhani text-xs text-primary">{member.role}</p>
+                          <p className="font-rajdhani text-xs text-muted-foreground">{member.phone}</p>
+                        </div>
+                      </div>
+                      <div className="flex justify-end gap-2 mt-3">
+                        <button onClick={() => setEditingTeamMember(member)} className="p-1.5 text-primary hover:bg-primary/10 rounded-lg">
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => deleteTeamMember(member.id)} className="p-1.5 text-destructive hover:bg-destructive/10 rounded-lg">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </GlassCard>
+                  ))}
+                </div>
+              </div>
+
+              {/* Faculty Coordinators */}
+              <div>
+                <h3 className="font-orbitron text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                  <GraduationCap className="w-5 h-5 text-secondary" /> Faculty Coordinators
+                </h3>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {team.filter(m => m.type === 'faculty').map(member => (
+                    <GlassCard key={member.id} className="p-4">
+                      <div className="flex items-center gap-4">
+                        <img src={member.photoUrl} alt={member.name} className="w-14 h-14 object-cover rounded-full" />
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-orbitron font-bold text-foreground text-sm truncate">{member.name}</h4>
+                          <p className="font-rajdhani text-xs text-primary">{member.role}</p>
+                          <p className="font-rajdhani text-xs text-muted-foreground">{member.department}</p>
+                        </div>
+                      </div>
+                      <div className="flex justify-end gap-2 mt-3">
+                        <button onClick={() => setEditingTeamMember(member)} className="p-1.5 text-primary hover:bg-primary/10 rounded-lg">
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => deleteTeamMember(member.id)} className="p-1.5 text-destructive hover:bg-destructive/10 rounded-lg">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </GlassCard>
+                  ))}
+                </div>
               </div>
             </div>
           )}

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar, MapPin, Users, Trophy, Zap, Rocket } from 'lucide-react';
 import ParticleBackground from '@/components/ParticleBackground';
 import Navigation from '@/components/Navigation';
+import CollegeBrandingBar from '@/components/CollegeBrandingBar';
 import Footer from '@/components/Footer';
 import GlassCard from '@/components/GlassCard';
 import EventCard from '@/components/EventCard';
@@ -35,9 +36,10 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <ParticleBackground />
       <Navigation />
+      <CollegeBrandingBar />
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center pt-32 overflow-hidden">
         {/* Gradient Orbs */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse-slow" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse-slow" 

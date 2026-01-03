@@ -8,6 +8,8 @@ import Events from "./pages/Events";
 import Gallery from "./pages/Gallery";
 import Announcements from "./pages/Announcements";
 import About from "./pages/About";
+import Sponsors from "./pages/Sponsors";
+import Team from "./pages/Team";
 import Admin from "./pages/Admin";
 import Panel from "./pages/Panel";
 import NotFound from "./pages/NotFound";
@@ -26,6 +28,8 @@ const App = () => (
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/announcements" element={<Announcements />} />
           <Route path="/about" element={<About />} />
+          <Route path="/sponsors" element={<Sponsors />} />
+          <Route path="/team" element={<Team />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/panel" element={<Panel />} />
           <Route path="*" element={<NotFound />} />
