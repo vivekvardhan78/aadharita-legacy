@@ -1,0 +1,187 @@
+import { useEffect, useState } from 'react';
+import { Search, Filter, X } from 'lucide-react';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
+import EventCard from '@/components/EventCard';
+import GlassCard from '@/components/GlassCard';
+import { getEvents, initializeStorage } from '@/lib/storage';
+import type { Event } from '@/lib/storage';
+
+const Events = () => {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+
+  useEffect(() => {
+    initializeStorage();
+    const loadedEvents = getEvents();
+    setEvents(loadedEvents);
+    setFilteredEvents(loadedEvents);
+  }, []);
+
+  useEffect(() => {
+    let filtered = events;
+
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (event) =>
+          event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          event.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter((event) => event.category === selectedCategory);
+    }
+
+    setFilteredEvents(filtered);
+  }, [searchTerm, selectedCategory, events]);
+
+  const categories = ['All', ...new Set(events.map((e) => e.category))];
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+
+      {/* Hero */}
+      <section className="pt-32 pb-16 relative">
+        <div className="absolute inset-0 bg-grid-pattern opacity-20" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center max-w-3xl mx-auto">
+            <h1 className="font-orbitron text-4xl md:text-5xl font-bold mb-4 opacity-0 animate-fade-in">
+              <span className="gradient-text">Technical Events</span>
+            </h1>
+            <p className="font-rajdhani text-lg text-muted-foreground opacity-0 animate-fade-in"
+              style={{ animationDelay: '0.2s' }}>
+              Explore 50+ events across multiple domains. Find your arena and compete!
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Filters */}
+      <section className="py-8 border-y border-border/30 bg-card/20 backdrop-blur-sm sticky top-16 md:top-20 z-40">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center gap-4">
+            {/* Search */}
+            <div className="relative flex-1 w-full md:max-w-md">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search events..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani
+                  focus:outline-none focus:border-primary transition-colors"
+              />
+            </div>
+
+            {/* Category Filter */}
+            <div className="flex items-center gap-2 flex-wrap justify-center">
+              <Filter className="w-5 h-5 text-muted-foreground" />
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 font-rajdhani font-medium text-sm rounded-lg transition-all duration-300
+                    ${selectedCategory === category
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground'
+                    }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Events Grid */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          {filteredEvents.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredEvents.map((event, index) => (
+                <div key={event.id} onClick={() => setSelectedEvent(event)} className="cursor-pointer">
+                  <EventCard event={event} index={index} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <p className="font-rajdhani text-xl text-muted-foreground">No events found matching your criteria.</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Event Modal */}
+      {selectedEvent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
+          onClick={() => setSelectedEvent(null)}>
+          <GlassCard className="max-w-2xl w-full max-h-[90vh] overflow-y-auto p-0" onClick={(e) => e.stopPropagation()}>
+            <div className="relative h-64 overflow-hidden rounded-t-2xl">
+              <img
+                src={selectedEvent.posterUrl}
+                alt={selectedEvent.name}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+              <button
+                onClick={() => setSelectedEvent(null)}
+                className="absolute top-4 right-4 p-2 glass-card rounded-full hover:bg-destructive/20 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <span className="absolute bottom-4 left-6 px-4 py-1 text-sm font-rajdhani font-semibold 
+                bg-secondary/80 backdrop-blur-sm text-secondary-foreground rounded-full">
+                {selectedEvent.category}
+              </span>
+            </div>
+            
+            <div className="p-6 space-y-6">
+              <h2 className="font-orbitron text-2xl font-bold neon-text">{selectedEvent.name}</h2>
+              
+              <p className="font-rajdhani text-muted-foreground">{selectedEvent.description}</p>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="glass-card p-4 text-center">
+                  <div className="text-sm text-muted-foreground font-rajdhani">Date</div>
+                  <div className="font-semibold text-primary">{selectedEvent.date}</div>
+                </div>
+                <div className="glass-card p-4 text-center">
+                  <div className="text-sm text-muted-foreground font-rajdhani">Time</div>
+                  <div className="font-semibold text-primary">{selectedEvent.time}</div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-orbitron text-lg font-semibold mb-3 text-secondary">Rules & Guidelines</h3>
+                <ul className="space-y-2">
+                  {selectedEvent.rules.map((rule, index) => (
+                    <li key={index} className="flex items-start gap-2 font-rajdhani text-muted-foreground">
+                      <span className="text-primary mt-1">▹</span>
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <button className="w-full py-4 font-rajdhani font-bold text-lg bg-primary text-primary-foreground 
+                rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_hsl(var(--neon-cyan)/0.5)]">
+                Register for Event
+              </button>
+            </div>
+          </GlassCard>
+        </div>
+      )}
+
+      <Footer />
+    </div>
+  );
+};
+
+export default Events;
