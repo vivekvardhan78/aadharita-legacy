@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Search, Filter, X, Calendar, Clock } from 'lucide-react';
+import { Search, Filter, X, Calendar, Clock, HelpCircle, ChevronDown } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import CollegeBrandingBar from '@/components/CollegeBrandingBar';
 import Footer from '@/components/Footer';
@@ -8,6 +8,12 @@ import GlassCard from '@/components/GlassCard';
 import ParticleBackground from '@/components/ParticleBackground';
 import { getEvents, initializeStorage } from '@/lib/storage';
 import type { Event } from '@/lib/storage';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const Events = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -199,13 +205,65 @@ const Events = () => {
                 </ul>
               </div>
 
-              <button 
-                className="w-full py-4 font-rajdhani font-bold text-lg text-white 
-                  rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,212,255,0.5)]"
-                style={{ backgroundColor: selectedEvent.accentColor || 'hsl(var(--primary))' }}
-              >
-                Register for Event
-              </button>
+              {/* FAQ Section */}
+              {selectedEvent.faqs && selectedEvent.faqs.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="font-orbitron text-lg font-semibold flex items-center gap-2" style={{ color: selectedEvent.accentColor }}>
+                    <HelpCircle className="w-5 h-5" style={{ filter: `drop-shadow(0 0 8px ${selectedEvent.accentColor})` }} />
+                    Frequently Asked Questions
+                  </h3>
+                  <Accordion type="single" collapsible className="space-y-2">
+                    {selectedEvent.faqs.map((faq, index) => (
+                      <AccordionItem 
+                        key={faq.id} 
+                        value={`faq-${index}`}
+                        className="glass-card border border-border/30 rounded-xl overflow-hidden"
+                      >
+                        <AccordionTrigger 
+                          className="px-4 py-3 font-rajdhani font-semibold text-left hover:no-underline hover:bg-muted/20 transition-colors"
+                          style={{ color: selectedEvent.accentColor }}
+                        >
+                          <span className="flex items-center gap-2">
+                            <span 
+                              className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
+                              style={{ backgroundColor: `${selectedEvent.accentColor}30`, color: selectedEvent.accentColor }}
+                            >
+                              {index + 1}
+                            </span>
+                            {faq.question}
+                          </span>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-4 pb-4 pt-0">
+                          <div className="pl-8 font-rajdhani text-muted-foreground">
+                            {faq.answer}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </div>
+              )}
+
+              {selectedEvent.registrationUrl ? (
+                <a 
+                  href={selectedEvent.registrationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full py-4 font-rajdhani font-bold text-lg text-white text-center
+                    rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,212,255,0.5)]"
+                  style={{ backgroundColor: selectedEvent.accentColor || 'hsl(var(--primary))' }}
+                >
+                  Register for Event
+                </a>
+              ) : (
+                <button 
+                  className="w-full py-4 font-rajdhani font-bold text-lg text-white 
+                    rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,212,255,0.5)]"
+                  style={{ backgroundColor: selectedEvent.accentColor || 'hsl(var(--primary))' }}
+                >
+                  Register for Event
+                </button>
+              )}
             </div>
           </GlassCard>
         </div>
