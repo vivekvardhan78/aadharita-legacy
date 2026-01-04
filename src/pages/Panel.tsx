@@ -2,19 +2,19 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Calendar, Image, Bell, Settings, LogOut, Plus, Trash2, Edit2, Save, X, Home, Info,
-  Building2, Users, GraduationCap, Award, Palette
+  Building2, Users, GraduationCap, Award, Palette, Sparkles
 } from 'lucide-react';
 import GlassCard from '@/components/GlassCard';
 import { useToast } from '@/hooks/use-toast';
 import {
   isAdminAuthenticated, adminLogout, getEvents, saveEvents, getAnnouncements, saveAnnouncements,
   getGallery, saveGallery, getSettings, updateHeroContent, updateAboutContent, updateCollegeBranding,
-  getSponsors, saveSponsors, getTeam, saveTeam,
+  getSponsors, saveSponsors, getTeam, saveTeam, getAadhritaBranding, updateAadhritaBranding,
   type Event, type Announcement, type GalleryImage, type HeroContent, type AboutContent, 
-  type CollegeBranding, type Sponsor, type TeamMember
+  type CollegeBranding, type Sponsor, type TeamMember, type AadhritaBranding
 } from '@/lib/storage';
 
-type TabType = 'dashboard' | 'events' | 'gallery' | 'announcements' | 'hero' | 'about' | 'college' | 'sponsors' | 'team';
+type TabType = 'dashboard' | 'branding' | 'events' | 'gallery' | 'announcements' | 'hero' | 'about' | 'college' | 'sponsors' | 'team';
 
 const Panel = () => {
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
@@ -28,6 +28,7 @@ const Panel = () => {
   const [heroContent, setHeroContent] = useState<HeroContent | null>(null);
   const [aboutContent, setAboutContent] = useState<AboutContent | null>(null);
   const [collegeBranding, setCollegeBranding] = useState<CollegeBranding | null>(null);
+  const [aadhritaBranding, setAadhritaBranding] = useState<AadhritaBranding | null>(null);
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const [team, setTeam] = useState<TeamMember[]>([]);
 
@@ -55,6 +56,7 @@ const Panel = () => {
     setHeroContent(settings.heroContent);
     setAboutContent(settings.aboutContent);
     setCollegeBranding(settings.collegeBranding);
+    setAadhritaBranding(getAadhritaBranding());
     setSponsors(getSponsors());
     setTeam(getTeam());
   };
@@ -67,6 +69,7 @@ const Panel = () => {
 
   const tabs = [
     { id: 'dashboard' as TabType, label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'branding' as TabType, label: 'AADHRITA Logo', icon: Sparkles },
     { id: 'college' as TabType, label: 'College', icon: Building2 },
     { id: 'events' as TabType, label: 'Events', icon: Calendar },
     { id: 'gallery' as TabType, label: 'Gallery', icon: Image },
@@ -76,6 +79,13 @@ const Panel = () => {
     { id: 'hero' as TabType, label: 'Hero', icon: Home },
     { id: 'about' as TabType, label: 'About', icon: Info },
   ];
+
+  // AADHRITA Branding handlers
+  const saveAadhrita = () => {
+    if (!aadhritaBranding) return;
+    updateAadhritaBranding(aadhritaBranding);
+    toast({ title: 'AADHRITA branding updated!' });
+  };
 
   // Event handlers
   const saveEvent = () => {
@@ -279,6 +289,63 @@ const Panel = () => {
             </div>
           )}
 
+          {/* AADHRITA Branding */}
+          {activeTab === 'branding' && aadhritaBranding && (
+            <div className="space-y-6">
+              <h2 className="font-orbitron text-2xl font-bold gradient-text">AADHRITA Official Branding</h2>
+              <GlassCard className="p-6 space-y-6">
+                <div>
+                  <label className="block font-rajdhani text-sm text-muted-foreground mb-2">AADHRITA Official Logo URL</label>
+                  <input
+                    type="text"
+                    placeholder="Logo Image URL"
+                    value={aadhritaBranding.logoUrl}
+                    onChange={e => setAadhritaBranding({ ...aadhritaBranding, logoUrl: e.target.value })}
+                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                  />
+                </div>
+                <div>
+                  <label className="block font-rajdhani text-sm text-muted-foreground mb-2">Logo Glow Color</label>
+                  <div className="flex items-center gap-4">
+                    <input
+                      type="color"
+                      value={aadhritaBranding.glowColor}
+                      onChange={e => setAadhritaBranding({ ...aadhritaBranding, glowColor: e.target.value })}
+                      className="w-16 h-12 rounded-lg cursor-pointer border-0"
+                    />
+                    <span className="font-mono text-sm text-muted-foreground">{aadhritaBranding.glowColor}</span>
+                    <span className="font-rajdhani text-xs text-muted-foreground">(Red neon recommended: #ef4444)</span>
+                  </div>
+                </div>
+                {aadhritaBranding.logoUrl && (
+                  <div className="p-6 bg-background/50 rounded-xl flex flex-col items-center gap-4">
+                    <span className="font-rajdhani text-sm text-muted-foreground">Logo Preview with Glow Effect</span>
+                    <div
+                      className="animate-pulse-slow"
+                      style={{
+                        filter: `drop-shadow(0 0 15px ${aadhritaBranding.glowColor}) drop-shadow(0 0 30px ${aadhritaBranding.glowColor}) drop-shadow(0 0 45px ${aadhritaBranding.glowColor}40)`,
+                      }}
+                    >
+                      <img src={aadhritaBranding.logoUrl} alt="AADHRITA Logo Preview" className="h-24 w-auto object-contain" />
+                    </div>
+                    <span 
+                      className="font-orbitron text-3xl font-bold"
+                      style={{
+                        color: aadhritaBranding.glowColor,
+                        textShadow: `0 0 10px ${aadhritaBranding.glowColor}, 0 0 20px ${aadhritaBranding.glowColor}, 0 0 30px ${aadhritaBranding.glowColor}40`,
+                      }}
+                    >
+                      AADHRITA
+                    </span>
+                  </div>
+                )}
+                <button onClick={saveAadhrita} className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-rajdhani font-semibold">
+                  <Save className="w-4 h-4" /> Save Branding
+                </button>
+              </GlassCard>
+            </div>
+          )}
+
           {/* College Branding */}
           {activeTab === 'college' && collegeBranding && (
             <div className="space-y-6">
@@ -333,7 +400,7 @@ const Panel = () => {
               <div className="flex items-center justify-between">
                 <h2 className="font-orbitron text-2xl font-bold gradient-text">Manage Events</h2>
                 <button
-                  onClick={() => setEditingEvent({ id: '', name: '', description: '', rules: [], date: '', time: '', posterUrl: '', category: '', logoUrl: '', accentColor: '#00d4ff' })}
+                  onClick={() => setEditingEvent({ id: '', name: '', description: '', rules: [], date: '', time: '', posterUrl: '', category: '', logoUrl: '', accentColor: '#00d4ff', registrationUrl: '' })}
                   className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl font-rajdhani font-semibold"
                 >
                   <Plus className="w-4 h-4" /> Add Event
@@ -392,6 +459,16 @@ const Panel = () => {
                       value={editingEvent.logoUrl || ''}
                       onChange={e => setEditingEvent({ ...editingEvent, logoUrl: e.target.value })}
                       className="px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-rajdhani text-sm text-muted-foreground mb-2">Registration URL (Google Form / External Link)</label>
+                    <input
+                      type="text"
+                      placeholder="https://forms.google.com/..."
+                      value={editingEvent.registrationUrl || ''}
+                      onChange={e => setEditingEvent({ ...editingEvent, registrationUrl: e.target.value })}
+                      className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
                     />
                   </div>
                   <div className="flex items-center gap-4">

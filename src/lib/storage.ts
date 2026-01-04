@@ -11,6 +11,12 @@ export interface Event {
   category: string;
   logoUrl?: string;
   accentColor?: string;
+  registrationUrl?: string;
+}
+
+export interface AadhritaBranding {
+  logoUrl: string;
+  glowColor: string;
 }
 
 export interface Announcement {
@@ -70,6 +76,7 @@ export interface SiteSettings {
   heroContent: HeroContent;
   aboutContent: AboutContent;
   collegeBranding: CollegeBranding;
+  aadhritaBranding: AadhritaBranding;
 }
 
 const STORAGE_KEYS = {
@@ -111,6 +118,11 @@ const defaultCollegeBranding: CollegeBranding = {
   logoUrl: '',
 };
 
+const defaultAadhritaBranding: AadhritaBranding = {
+  logoUrl: '',
+  glowColor: '#ef4444',
+};
+
 const defaultEvents: Event[] = [
   {
     id: '1',
@@ -123,6 +135,7 @@ const defaultEvents: Event[] = [
     category: 'Coding',
     logoUrl: '',
     accentColor: '#00d4ff',
+    registrationUrl: 'https://forms.google.com',
   },
   {
     id: '2',
@@ -135,6 +148,7 @@ const defaultEvents: Event[] = [
     category: 'Robotics',
     logoUrl: '',
     accentColor: '#a855f7',
+    registrationUrl: 'https://forms.google.com',
   },
   {
     id: '3',
@@ -147,6 +161,7 @@ const defaultEvents: Event[] = [
     category: 'Quiz',
     logoUrl: '',
     accentColor: '#22c55e',
+    registrationUrl: 'https://forms.google.com',
   },
   {
     id: '4',
@@ -159,6 +174,7 @@ const defaultEvents: Event[] = [
     category: 'Design',
     logoUrl: '',
     accentColor: '#f59e0b',
+    registrationUrl: 'https://forms.google.com',
   },
   {
     id: '5',
@@ -171,6 +187,7 @@ const defaultEvents: Event[] = [
     category: 'Puzzle',
     logoUrl: '',
     accentColor: '#ec4899',
+    registrationUrl: 'https://forms.google.com',
   },
   {
     id: '6',
@@ -183,6 +200,7 @@ const defaultEvents: Event[] = [
     category: 'AI/ML',
     logoUrl: '',
     accentColor: '#06b6d4',
+    registrationUrl: 'https://forms.google.com',
   },
 ];
 
@@ -259,6 +277,7 @@ export const initializeStorage = (): void => {
       heroContent: defaultHeroContent,
       aboutContent: defaultAboutContent,
       collegeBranding: defaultCollegeBranding,
+      aadhritaBranding: defaultAadhritaBranding,
     }));
   }
 };
@@ -394,6 +413,7 @@ export const getSettings = (): SiteSettings => {
     heroContent: defaultHeroContent,
     aboutContent: defaultAboutContent,
     collegeBranding: defaultCollegeBranding,
+    aadhritaBranding: defaultAadhritaBranding,
   };
 };
 
@@ -422,6 +442,17 @@ export const updateCollegeBranding = (branding: CollegeBranding): void => {
 export const getCollegeBranding = (): CollegeBranding => {
   const settings = getSettings();
   return settings.collegeBranding || defaultCollegeBranding;
+};
+
+export const getAadhritaBranding = (): AadhritaBranding => {
+  const settings = getSettings();
+  return settings.aadhritaBranding || defaultAadhritaBranding;
+};
+
+export const updateAadhritaBranding = (branding: AadhritaBranding): void => {
+  const settings = getSettings();
+  settings.aadhritaBranding = branding;
+  saveSettings(settings);
 };
 
 // Admin Authentication
