@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Calendar, Image, Bell, Settings, LogOut, Plus, Trash2, Edit2, Save, X, Home, Info,
-  Building2, Users, GraduationCap, Award, Palette, Sparkles
+  Building2, Users, GraduationCap, Award, Palette, Sparkles, HelpCircle, ChevronUp, ChevronDown
 } from 'lucide-react';
 import GlassCard from '@/components/GlassCard';
 import { useToast } from '@/hooks/use-toast';
@@ -11,7 +11,7 @@ import {
   getGallery, saveGallery, getSettings, updateHeroContent, updateAboutContent, updateCollegeBranding,
   getSponsors, saveSponsors, getTeam, saveTeam, getAadhritaBranding, updateAadhritaBranding,
   type Event, type Announcement, type GalleryImage, type HeroContent, type AboutContent, 
-  type CollegeBranding, type Sponsor, type TeamMember, type AadhritaBranding
+  type CollegeBranding, type Sponsor, type TeamMember, type AadhritaBranding, type FAQ
 } from '@/lib/storage';
 
 type TabType = 'dashboard' | 'branding' | 'events' | 'gallery' | 'announcements' | 'hero' | 'about' | 'college' | 'sponsors' | 'team';
@@ -400,7 +400,7 @@ const Panel = () => {
               <div className="flex items-center justify-between">
                 <h2 className="font-orbitron text-2xl font-bold gradient-text">Manage Events</h2>
                 <button
-                  onClick={() => setEditingEvent({ id: '', name: '', description: '', rules: [], date: '', time: '', posterUrl: '', category: '', logoUrl: '', accentColor: '#00d4ff', registrationUrl: '' })}
+                  onClick={() => setEditingEvent({ id: '', name: '', description: '', rules: [], date: '', time: '', posterUrl: '', category: '', logoUrl: '', accentColor: '#00d4ff', registrationUrl: '', faqs: [] })}
                   className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl font-rajdhani font-semibold"
                 >
                   <Plus className="w-4 h-4" /> Add Event
@@ -487,7 +487,106 @@ const Panel = () => {
                     onChange={e => setEditingEvent({ ...editingEvent, rules: e.target.value.split('\n').filter(r => r.trim()) })}
                     className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani h-24"
                   />
-                  <div className="flex gap-2">
+
+                  {/* FAQ Management Section */}
+                  <div className="space-y-3 pt-4 border-t border-border/30">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-orbitron text-base font-semibold flex items-center gap-2 text-primary">
+                        <HelpCircle className="w-4 h-4" />
+                        Event FAQs
+                      </h4>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newFaq: FAQ = { id: Date.now().toString(), question: '', answer: '' };
+                          setEditingEvent({ ...editingEvent, faqs: [...(editingEvent.faqs || []), newFaq] });
+                        }}
+                        className="flex items-center gap-1 px-3 py-1.5 text-sm bg-primary/10 text-primary rounded-lg font-rajdhani hover:bg-primary/20 transition-colors"
+                      >
+                        <Plus className="w-3 h-3" /> Add FAQ
+                      </button>
+                    </div>
+
+                    {(editingEvent.faqs || []).map((faq, faqIndex) => (
+                      <div key={faq.id} className="glass-card p-4 space-y-2 relative">
+                        <div className="flex items-center justify-between">
+                          <span className="font-rajdhani text-xs text-muted-foreground">FAQ #{faqIndex + 1}</span>
+                          <div className="flex items-center gap-1">
+                            {faqIndex > 0 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const faqs = [...(editingEvent.faqs || [])];
+                                  [faqs[faqIndex - 1], faqs[faqIndex]] = [faqs[faqIndex], faqs[faqIndex - 1]];
+                                  setEditingEvent({ ...editingEvent, faqs });
+                                }}
+                                className="p-1 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"
+                                title="Move up"
+                              >
+                                <ChevronUp className="w-4 h-4" />
+                              </button>
+                            )}
+                            {faqIndex < (editingEvent.faqs || []).length - 1 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const faqs = [...(editingEvent.faqs || [])];
+                                  [faqs[faqIndex], faqs[faqIndex + 1]] = [faqs[faqIndex + 1], faqs[faqIndex]];
+                                  setEditingEvent({ ...editingEvent, faqs });
+                                }}
+                                className="p-1 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"
+                                title="Move down"
+                              >
+                                <ChevronDown className="w-4 h-4" />
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const faqs = (editingEvent.faqs || []).filter(f => f.id !== faq.id);
+                                setEditingEvent({ ...editingEvent, faqs });
+                              }}
+                              className="p-1 text-destructive hover:bg-destructive/10 rounded transition-colors"
+                              title="Delete FAQ"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Question"
+                          value={faq.question}
+                          onChange={e => {
+                            const faqs = (editingEvent.faqs || []).map(f => 
+                              f.id === faq.id ? { ...f, question: e.target.value } : f
+                            );
+                            setEditingEvent({ ...editingEvent, faqs });
+                          }}
+                          className="w-full px-3 py-2 bg-muted/50 border border-border rounded-lg font-rajdhani text-sm"
+                        />
+                        <textarea
+                          placeholder="Answer"
+                          value={faq.answer}
+                          onChange={e => {
+                            const faqs = (editingEvent.faqs || []).map(f => 
+                              f.id === faq.id ? { ...f, answer: e.target.value } : f
+                            );
+                            setEditingEvent({ ...editingEvent, faqs });
+                          }}
+                          className="w-full px-3 py-2 bg-muted/50 border border-border rounded-lg font-rajdhani text-sm h-16"
+                        />
+                      </div>
+                    ))}
+
+                    {(!editingEvent.faqs || editingEvent.faqs.length === 0) && (
+                      <div className="text-center py-6 text-muted-foreground font-rajdhani text-sm">
+                        No FAQs added yet. Click "Add FAQ" to create questions and answers for this event.
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2 pt-2">
                     <button onClick={saveEvent} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl font-rajdhani">
                       <Save className="w-4 h-4" /> Save
                     </button>
@@ -509,6 +608,10 @@ const Panel = () => {
                     <div className="flex-1">
                       <h3 className="font-orbitron font-bold text-foreground">{event.name}</h3>
                       <p className="font-rajdhani text-sm text-muted-foreground">{event.category} • {event.date}</p>
+                      <p className="font-rajdhani text-xs text-primary mt-1">
+                        <HelpCircle className="w-3 h-3 inline mr-1" />
+                        {event.faqs?.length || 0} FAQs
+                      </p>
                     </div>
                     <button onClick={() => setEditingEvent(event)} className="p-2 text-primary hover:bg-primary/10 rounded-lg">
                       <Edit2 className="w-5 h-5" />

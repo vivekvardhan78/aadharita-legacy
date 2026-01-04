@@ -1,5 +1,11 @@
 // LocalStorage CMS Manager for AADHRITA 2026
 
+export interface FAQ {
+  id: string;
+  question: string;
+  answer: string;
+}
+
 export interface Event {
   id: string;
   name: string;
@@ -12,6 +18,7 @@ export interface Event {
   logoUrl?: string;
   accentColor?: string;
   registrationUrl?: string;
+  faqs?: FAQ[];
 }
 
 export interface AadhritaBranding {
@@ -136,6 +143,11 @@ const defaultEvents: Event[] = [
     logoUrl: '',
     accentColor: '#00d4ff',
     registrationUrl: 'https://forms.google.com',
+    faqs: [
+      { id: '1', question: 'Can we use AI tools like GitHub Copilot?', answer: 'Yes, AI-assisted coding tools are allowed. However, the core logic must be original work.' },
+      { id: '2', question: 'Is prior registration mandatory?', answer: 'Yes, teams must register at least 48 hours before the event starts.' },
+      { id: '3', question: 'What happens if a team member drops out?', answer: 'Teams can continue with remaining members, but no replacements allowed after registration closes.' },
+    ],
   },
   {
     id: '2',
@@ -149,6 +161,10 @@ const defaultEvents: Event[] = [
     logoUrl: '',
     accentColor: '#a855f7',
     registrationUrl: 'https://forms.google.com',
+    faqs: [
+      { id: '1', question: 'Can we bring pre-built robots?', answer: 'Yes, robots can be pre-built. On-site modifications are allowed during pit time.' },
+      { id: '2', question: 'What power sources are allowed?', answer: 'Only battery-powered robots. Maximum voltage is 24V DC.' },
+    ],
   },
   {
     id: '3',
@@ -162,6 +178,10 @@ const defaultEvents: Event[] = [
     logoUrl: '',
     accentColor: '#22c55e',
     registrationUrl: 'https://forms.google.com',
+    faqs: [
+      { id: '1', question: 'What topics will be covered?', answer: 'Computer Science, Electronics, Physics, Mathematics, and General Tech Awareness.' },
+      { id: '2', question: 'How many rounds are there?', answer: 'Three rounds: Prelims (written), Semi-finals (buzzer), and Finals (rapid-fire).' },
+    ],
   },
   {
     id: '4',
@@ -175,6 +195,10 @@ const defaultEvents: Event[] = [
     logoUrl: '',
     accentColor: '#f59e0b',
     registrationUrl: 'https://forms.google.com',
+    faqs: [
+      { id: '1', question: 'Can we use design templates?', answer: 'UI kits are allowed, but the design concept must be original.' },
+      { id: '2', question: 'Will we have internet access?', answer: 'Yes, for downloading assets and references only.' },
+    ],
   },
   {
     id: '5',
@@ -188,6 +212,9 @@ const defaultEvents: Event[] = [
     logoUrl: '',
     accentColor: '#ec4899',
     registrationUrl: 'https://forms.google.com',
+    faqs: [
+      { id: '1', question: 'What kind of puzzles can we expect?', answer: 'A mix of cryptographic ciphers, logic puzzles, and physical treasure hunt clues.' },
+    ],
   },
   {
     id: '6',
@@ -201,6 +228,10 @@ const defaultEvents: Event[] = [
     logoUrl: '',
     accentColor: '#06b6d4',
     registrationUrl: 'https://forms.google.com',
+    faqs: [
+      { id: '1', question: 'Can we use pre-trained models?', answer: 'Yes, but you must clearly mention what models you used and your contributions.' },
+      { id: '2', question: 'Is there a theme for projects?', answer: 'The theme will be announced one week before the event on the announcements page.' },
+    ],
   },
 ];
 
