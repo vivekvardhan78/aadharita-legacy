@@ -7,13 +7,15 @@ import CollegeBrandingBar from '@/components/CollegeBrandingBar';
 import Footer from '@/components/Footer';
 import GlassCard from '@/components/GlassCard';
 import EventCard from '@/components/EventCard';
-import { getSettings, getEvents, getAnnouncements, initializeStorage } from '@/lib/storage';
-import type { HeroContent, Event, Announcement } from '@/lib/storage';
+import AadhritaLogo from '@/components/AadhritaLogo';
+import { getSettings, getEvents, getAnnouncements, initializeStorage, getAadhritaBranding } from '@/lib/storage';
+import type { HeroContent, Event, Announcement, AadhritaBranding } from '@/lib/storage';
 
 const Index = () => {
   const [heroContent, setHeroContent] = useState<HeroContent | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [aadhritaBranding, setAadhritaBranding] = useState<AadhritaBranding | null>(null);
 
   useEffect(() => {
     initializeStorage();
@@ -21,6 +23,7 @@ const Index = () => {
     setHeroContent(settings.heroContent);
     setEvents(getEvents().slice(0, 3));
     setAnnouncements(getAnnouncements());
+    setAadhritaBranding(getAadhritaBranding());
   }, []);
 
   if (!heroContent) return null;
@@ -54,10 +57,23 @@ const Index = () => {
               <span className="font-rajdhani text-sm text-muted-foreground">{heroContent.date}</span>
             </div>
 
+            {/* AADHRITA Logo */}
+            <div className="flex justify-center mb-8 opacity-0 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+              <AadhritaLogo size="xl" showText={false} />
+            </div>
+
             {/* Main Title */}
             <h1 className="font-orbitron text-5xl md:text-7xl lg:text-8xl font-black mb-6
               opacity-0 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-              <span className="neon-text">{heroContent.festName.split(' – ')[0]}</span>
+              <span 
+                className="block"
+                style={{
+                  color: aadhritaBranding?.glowColor || '#ef4444',
+                  textShadow: `0 0 20px ${aadhritaBranding?.glowColor || '#ef4444'}, 0 0 40px ${aadhritaBranding?.glowColor || '#ef4444'}40`,
+                }}
+              >
+                {heroContent.festName.split(' – ')[0]}
+              </span>
               <span className="block text-3xl md:text-4xl lg:text-5xl mt-2 gradient-text">
                 – {heroContent.festName.split(' – ')[1] || '2026'}
               </span>

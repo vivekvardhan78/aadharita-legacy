@@ -1,14 +1,22 @@
-import { Calendar, Clock, ChevronRight } from 'lucide-react';
+import { Calendar, Clock, ChevronRight, ExternalLink } from 'lucide-react';
 import { Event } from '@/lib/storage';
 import GlassCard from './GlassCard';
 
 interface EventCardProps {
   event: Event;
   index: number;
+  onViewDetails?: () => void;
 }
 
-const EventCard = ({ event, index }: EventCardProps) => {
+const EventCard = ({ event, index, onViewDetails }: EventCardProps) => {
   const accentColor = event.accentColor || '#00d4ff';
+
+  const handleRegister = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (event.registrationUrl) {
+      window.open(event.registrationUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   return (
     <GlassCard
@@ -75,14 +83,32 @@ const EventCard = ({ event, index }: EventCardProps) => {
           </div>
         </div>
 
-        <button 
-          className="flex items-center gap-2 font-rajdhani font-semibold 
-            group-hover:gap-3 transition-all duration-300"
-          style={{ color: accentColor }}
-        >
-          View Details
-          <ChevronRight className="w-4 h-4" />
-        </button>
+        <div className="flex items-center justify-between gap-3">
+          {event.registrationUrl && (
+            <button 
+              onClick={handleRegister}
+              className="flex items-center gap-2 px-4 py-2 font-rajdhani font-semibold text-sm
+                rounded-lg transition-all duration-300 animate-pulse-slow
+                bg-gradient-to-r from-red-500 to-red-600 text-white
+                hover:shadow-[0_0_20px_rgba(239,68,68,0.6)] hover:scale-105"
+              style={{
+                boxShadow: '0 0 15px rgba(239, 68, 68, 0.4)',
+              }}
+            >
+              REGISTER NOW
+              <ExternalLink className="w-4 h-4" />
+            </button>
+          )}
+          <button 
+            onClick={onViewDetails}
+            className="flex items-center gap-2 font-rajdhani font-semibold 
+              group-hover:gap-3 transition-all duration-300 ml-auto"
+            style={{ color: accentColor }}
+          >
+            View Details
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </GlassCard>
   );

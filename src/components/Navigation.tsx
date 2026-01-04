@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Sparkles } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
+import AadhritaLogo from './AadhritaLogo';
 
 const navLinks = [
   { path: '/', label: 'Home' },
@@ -22,10 +23,7 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <Sparkles className="w-6 h-6 text-primary animate-pulse-slow" />
-            <span className="font-orbitron text-lg md:text-xl font-bold gradient-text">
-              AADHRITA
-            </span>
+            <AadhritaLogo size="sm" showText={true} />
           </Link>
 
           {/* Desktop Navigation */}

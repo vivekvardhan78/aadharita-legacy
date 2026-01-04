@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Sparkles, Mail, MapPin, Phone, Instagram, Twitter, Linkedin, Youtube } from 'lucide-react';
+import { Mail, MapPin, Phone, Instagram, Twitter, Linkedin, Youtube } from 'lucide-react';
+import AadhritaLogo from './AadhritaLogo';
 
 const Footer = () => {
   return (
@@ -8,10 +9,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-primary" />
-              <span className="font-orbitron text-xl font-bold gradient-text">AADHRITA 2026</span>
-            </div>
+            <AadhritaLogo size="md" showText={true} />
             <p className="text-muted-foreground font-rajdhani">
               India's premier national-level technical fest. Where innovation meets excellence.
             </p>
