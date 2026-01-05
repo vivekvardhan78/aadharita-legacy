@@ -1,19 +1,13 @@
-import { useEffect, useState } from 'react';
 import { Phone, User, GraduationCap } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import CollegeBrandingBar from '@/components/CollegeBrandingBar';
 import Footer from '@/components/Footer';
 import GlassCard from '@/components/GlassCard';
 import ParticleBackground from '@/components/ParticleBackground';
-import { getTeam, initializeStorage, type TeamMember } from '@/lib/storage';
+import { useTeam, type TeamMember } from '@/hooks/useSupabaseData';
 
 const Team = () => {
-  const [team, setTeam] = useState<TeamMember[]>([]);
-
-  useEffect(() => {
-    initializeStorage();
-    setTeam(getTeam());
-  }, []);
+  const { data: team, loading } = useTeam();
 
   const studentCoordinators = team.filter(m => m.type === 'student');
   const facultyCoordinators = team.filter(m => m.type === 'faculty');
@@ -23,9 +17,9 @@ const Team = () => {
       {/* Photo */}
       <div className="relative w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden 
         ring-2 ring-primary/30 group-hover:ring-primary transition-all duration-300">
-        {member.photoUrl ? (
+        {member.photo_url ? (
           <img 
-            src={member.photoUrl} 
+            src={member.photo_url} 
             alt={member.name}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
           />
@@ -57,18 +51,28 @@ const Team = () => {
         )}
 
         {/* Phone */}
-        <a 
-          href={`tel:${member.phone}`}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg 
-            bg-primary/10 text-primary hover:bg-primary/20 transition-colors
-            font-rajdhani text-sm"
-        >
-          <Phone className="w-4 h-4" />
-          {member.phone}
-        </a>
+        {member.phone && (
+          <a 
+            href={`tel:${member.phone}`}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg 
+              bg-primary/10 text-primary hover:bg-primary/20 transition-colors
+              font-rajdhani text-sm"
+          >
+            <Phone className="w-4 h-4" />
+            {member.phone}
+          </a>
+        )}
       </div>
     </GlassCard>
   );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

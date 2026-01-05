@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { Target, Eye, Sparkles, Award, Lightbulb, Users, Code, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
@@ -6,19 +5,10 @@ import CollegeBrandingBar from '@/components/CollegeBrandingBar';
 import Footer from '@/components/Footer';
 import GlassCard from '@/components/GlassCard';
 import ParticleBackground from '@/components/ParticleBackground';
-import { getSettings, initializeStorage } from '@/lib/storage';
-import type { AboutContent } from '@/lib/storage';
+import { useAbout } from '@/hooks/useSupabaseData';
 
 const About = () => {
-  const [aboutContent, setAboutContent] = useState<AboutContent | null>(null);
-
-  useEffect(() => {
-    initializeStorage();
-    const settings = getSettings();
-    setAboutContent(settings.aboutContent);
-  }, []);
-
-  if (!aboutContent) return null;
+  const { about, loading } = useAbout();
 
   const values = [
     { icon: Lightbulb, title: 'Innovation', description: 'Pushing boundaries and exploring new frontiers in technology.' },
@@ -26,6 +16,21 @@ const About = () => {
     { icon: Code, title: 'Excellence', description: 'Striving for the highest standards in every event.' },
     { icon: Heart, title: 'Passion', description: 'Fueled by love for technology and learning.' },
   ];
+
+  const highlights = [
+    about?.stat1 || '50+ Technical Events',
+    about?.stat2 || '100+ Colleges Participating',
+    about?.stat3 || '₹10 Lakh Prize Pool',
+    about?.stat4 || '3 Days of Innovation',
+  ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -46,7 +51,7 @@ const About = () => {
             </h1>
             <p className="font-rajdhani text-lg text-muted-foreground opacity-0 animate-fade-in"
               style={{ animationDelay: '0.2s' }}>
-              {aboutContent.description}
+              {about?.about || 'AADHRITA is the annual technical and cultural festival bringing together the brightest minds.'}
             </p>
           </div>
         </div>
@@ -56,7 +61,7 @@ const About = () => {
       <section className="py-16 bg-card/20">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            {aboutContent.highlights.map((highlight, index) => (
+            {highlights.map((highlight, index) => (
               <GlassCard
                 key={index}
                 className="p-6 text-center opacity-0 animate-scale-in"
@@ -82,7 +87,7 @@ const About = () => {
                 <h2 className="font-orbitron text-2xl font-bold neon-text">Our Mission</h2>
               </div>
               <p className="font-rajdhani text-muted-foreground leading-relaxed">
-                {aboutContent.mission}
+                {about?.mission || 'To foster innovation, creativity, and technical excellence among students while providing a platform for showcasing cutting-edge technologies.'}
               </p>
             </GlassCard>
 
@@ -94,7 +99,7 @@ const About = () => {
                 <h2 className="font-orbitron text-2xl font-bold neon-text-purple">Our Vision</h2>
               </div>
               <p className="font-rajdhani text-muted-foreground leading-relaxed">
-                {aboutContent.vision}
+                {about?.vision || 'To become the premier technical fest in India, inspiring the next generation of engineers, scientists, and innovators.'}
               </p>
             </GlassCard>
           </div>

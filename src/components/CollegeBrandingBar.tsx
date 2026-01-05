@@ -1,25 +1,20 @@
-import { useEffect, useState } from 'react';
 import { MapPin, GraduationCap } from 'lucide-react';
-import { getCollegeBranding, type CollegeBranding } from '@/lib/storage';
+import { useBranding } from '@/hooks/useSupabaseData';
 
 const CollegeBrandingBar = () => {
-  const [branding, setBranding] = useState<CollegeBranding | null>(null);
+  const { branding, loading } = useBranding();
 
-  useEffect(() => {
-    setBranding(getCollegeBranding());
-  }, []);
-
-  if (!branding) return null;
+  if (loading || !branding) return null;
 
   return (
     <div className="fixed top-16 md:top-20 left-0 right-0 z-40 glass-card border-b border-border/20 rounded-none">
       <div className="container mx-auto px-4 py-2">
         <div className="flex items-center justify-center gap-4 flex-wrap">
           {/* College Logo */}
-          {branding.logoUrl ? (
+          {branding.logo_url ? (
             <img 
-              src={branding.logoUrl} 
-              alt={branding.collegeName}
+              src={branding.logo_url} 
+              alt={branding.college_name}
               className="h-8 md:h-10 w-auto object-contain"
             />
           ) : (
@@ -31,7 +26,7 @@ const CollegeBrandingBar = () => {
           {/* College Info */}
           <div className="text-center md:text-left">
             <h2 className="font-orbitron text-xs md:text-sm font-bold text-foreground leading-tight">
-              {branding.collegeName}
+              {branding.college_name}
             </h2>
             <div className="flex items-center justify-center md:justify-start gap-1 text-muted-foreground">
               <MapPin className="w-3 h-3" />

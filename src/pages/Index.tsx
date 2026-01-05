@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar, MapPin, Users, Trophy, Zap, Rocket } from 'lucide-react';
 import ParticleBackground from '@/components/ParticleBackground';
@@ -8,25 +7,20 @@ import Footer from '@/components/Footer';
 import GlassCard from '@/components/GlassCard';
 import EventCard from '@/components/EventCard';
 import AadhritaLogo from '@/components/AadhritaLogo';
-import { getSettings, getEvents, getAnnouncements, initializeStorage, getAadhritaBranding } from '@/lib/storage';
-import type { HeroContent, Event, Announcement, AadhritaBranding } from '@/lib/storage';
+import { useBranding, useEvents, useAnnouncements } from '@/hooks/useSupabaseData';
 
 const Index = () => {
-  const [heroContent, setHeroContent] = useState<HeroContent | null>(null);
-  const [events, setEvents] = useState<Event[]>([]);
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [aadhritaBranding, setAadhritaBranding] = useState<AadhritaBranding | null>(null);
+  const { branding, loading: brandingLoading } = useBranding();
+  const { events, loading: eventsLoading } = useEvents();
+  const { announcements, loading: announcementsLoading } = useAnnouncements();
 
-  useEffect(() => {
-    initializeStorage();
-    const settings = getSettings();
-    setHeroContent(settings.heroContent);
-    setEvents(getEvents().slice(0, 3));
-    setAnnouncements(getAnnouncements());
-    setAadhritaBranding(getAadhritaBranding());
-  }, []);
-
-  if (!heroContent) return null;
+  if (brandingLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   const highlights = [
     { icon: Users, value: '5000+', label: 'Participants' },
@@ -34,6 +28,8 @@ const Index = () => {
     { icon: Zap, value: '50+', label: 'Events' },
     { icon: Rocket, value: '100+', label: 'Colleges' },
   ];
+
+  const featuredEvents = events.slice(0, 3);
 
   return (
     <div className="min-h-screen bg-background">
@@ -54,7 +50,9 @@ const Index = () => {
             <div className="inline-flex items-center gap-2 px-4 py-2 mb-8 glass-card rounded-full
               opacity-0 animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <Calendar className="w-4 h-4 text-primary" />
-              <span className="font-rajdhani text-sm text-muted-foreground">{heroContent.date}</span>
+              <span className="font-rajdhani text-sm text-muted-foreground">
+                {branding?.hero_date || 'March 15-17, 2026'}
+              </span>
             </div>
 
             {/* AADHRITA Logo */}
@@ -68,28 +66,30 @@ const Index = () => {
               <span 
                 className="block"
                 style={{
-                  color: aadhritaBranding?.glowColor || '#ef4444',
-                  textShadow: `0 0 20px ${aadhritaBranding?.glowColor || '#ef4444'}, 0 0 40px ${aadhritaBranding?.glowColor || '#ef4444'}40`,
+                  color: branding?.glow_color || '#ef4444',
+                  textShadow: `0 0 20px ${branding?.glow_color || '#ef4444'}, 0 0 40px ${branding?.glow_color || '#ef4444'}40`,
                 }}
               >
-                {heroContent.festName.split(' – ')[0]}
+                {branding?.hero_title?.split(' – ')[0] || branding?.fest_name || 'AADHRITA'}
               </span>
               <span className="block text-3xl md:text-4xl lg:text-5xl mt-2 gradient-text">
-                – {heroContent.festName.split(' – ')[1] || '2026'}
+                – {branding?.hero_title?.split(' – ')[1] || '2026'}
               </span>
             </h1>
 
             {/* Tagline */}
             <p className="font-rajdhani text-xl md:text-2xl text-muted-foreground mb-4
               opacity-0 animate-fade-in" style={{ animationDelay: '0.6s' }}>
-              {heroContent.tagline}
+              {branding?.hero_subtitle || 'The Ultimate Tech & Cultural Fest'}
             </p>
 
             {/* Venue */}
             <div className="flex items-center justify-center gap-2 mb-12
               opacity-0 animate-fade-in" style={{ animationDelay: '0.8s' }}>
               <MapPin className="w-5 h-5 text-secondary" />
-              <span className="font-rajdhani text-lg text-secondary">{heroContent.venue}</span>
+              <span className="font-rajdhani text-lg text-secondary">
+                {branding?.hero_venue || branding?.college_name || 'MVGR College of Engineering'}
+              </span>
             </div>
 
             {/* CTA Buttons */}
@@ -161,7 +161,7 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {events.map((event, index) => (
+            {featuredEvents.map((event, index) => (
               <EventCard key={event.id} event={event} index={index} />
             ))}
           </div>

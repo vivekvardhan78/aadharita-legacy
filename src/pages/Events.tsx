@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Search, Filter, X, Calendar, Clock, HelpCircle, ChevronDown } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Search, Filter, X, Calendar, Clock, HelpCircle } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import CollegeBrandingBar from '@/components/CollegeBrandingBar';
 import Footer from '@/components/Footer';
 import EventCard from '@/components/EventCard';
 import GlassCard from '@/components/GlassCard';
 import ParticleBackground from '@/components/ParticleBackground';
-import { getEvents, initializeStorage } from '@/lib/storage';
-import type { Event } from '@/lib/storage';
+import { useEvents } from '@/hooks/useSupabaseData';
 import {
   Accordion,
   AccordionContent,
@@ -16,27 +15,19 @@ import {
 } from "@/components/ui/accordion";
 
 const Events = () => {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
+  const { events, loading } = useEvents();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<typeof events[0] | null>(null);
 
-  useEffect(() => {
-    initializeStorage();
-    const loadedEvents = getEvents();
-    setEvents(loadedEvents);
-    setFilteredEvents(loadedEvents);
-  }, []);
-
-  useEffect(() => {
+  const filteredEvents = useMemo(() => {
     let filtered = events;
 
     if (searchTerm) {
       filtered = filtered.filter(
         (event) =>
           event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          event.description.toLowerCase().includes(searchTerm.toLowerCase())
+          (event.description || '').toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -44,10 +35,20 @@ const Events = () => {
       filtered = filtered.filter((event) => event.category === selectedCategory);
     }
 
-    setFilteredEvents(filtered);
-  }, [searchTerm, selectedCategory, events]);
+    return filtered;
+  }, [events, searchTerm, selectedCategory]);
 
-  const categories = ['All', ...new Set(events.map((e) => e.category))];
+  const categories = useMemo(() => {
+    return ['All', ...new Set(events.map((e) => e.category))];
+  }, [events]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -136,24 +137,26 @@ const Events = () => {
             {/* Accent Line */}
             <div 
               className="h-1 w-full rounded-t-2xl" 
-              style={{ backgroundColor: selectedEvent.accentColor || '#00d4ff' }}
+              style={{ backgroundColor: selectedEvent.accent_color || '#00d4ff' }}
             />
             <div className="relative h-64 overflow-hidden">
               {/* Event Logo */}
-              {selectedEvent.logoUrl && (
+              {selectedEvent.logo_url && (
                 <div className="absolute top-4 left-4 z-10">
                   <img 
-                    src={selectedEvent.logoUrl} 
+                    src={selectedEvent.logo_url} 
                     alt={`${selectedEvent.name} logo`}
                     className="h-16 w-16 object-contain bg-background/80 backdrop-blur-sm rounded-xl p-2"
                   />
                 </div>
               )}
-              <img
-                src={selectedEvent.posterUrl}
-                alt={selectedEvent.name}
-                className="w-full h-full object-cover"
-              />
+              {selectedEvent.poster_url && (
+                <img
+                  src={selectedEvent.poster_url}
+                  alt={selectedEvent.name}
+                  className="w-full h-full object-cover"
+                />
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
               <button
                 onClick={() => setSelectedEvent(null)}
@@ -164,7 +167,7 @@ const Events = () => {
               <span 
                 className="absolute bottom-4 left-6 px-4 py-1 text-sm font-rajdhani font-semibold 
                   backdrop-blur-sm text-white rounded-full"
-                style={{ backgroundColor: `${selectedEvent.accentColor || '#00d4ff'}cc` }}
+                style={{ backgroundColor: `${selectedEvent.accent_color || '#00d4ff'}cc` }}
               >
                 {selectedEvent.category}
               </span>
@@ -173,7 +176,7 @@ const Events = () => {
             <div className="p-6 space-y-6">
               <h2 
                 className="font-orbitron text-2xl font-bold"
-                style={{ color: selectedEvent.accentColor || 'hsl(var(--primary))' }}
+                style={{ color: selectedEvent.accent_color || 'hsl(var(--primary))' }}
               >
                 {selectedEvent.name}
               </h2>
@@ -182,34 +185,26 @@ const Events = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="glass-card p-4 text-center">
-                  <Calendar className="w-5 h-5 mx-auto mb-1" style={{ color: selectedEvent.accentColor }} />
+                  <Calendar className="w-5 h-5 mx-auto mb-1" style={{ color: selectedEvent.accent_color || undefined }} />
                   <div className="text-sm text-muted-foreground font-rajdhani">Date</div>
-                  <div className="font-semibold" style={{ color: selectedEvent.accentColor }}>{selectedEvent.date}</div>
+                  <div className="font-semibold" style={{ color: selectedEvent.accent_color || undefined }}>
+                    {selectedEvent.date || 'TBA'}
+                  </div>
                 </div>
                 <div className="glass-card p-4 text-center">
-                  <Clock className="w-5 h-5 mx-auto mb-1" style={{ color: selectedEvent.accentColor }} />
+                  <Clock className="w-5 h-5 mx-auto mb-1" style={{ color: selectedEvent.accent_color || undefined }} />
                   <div className="text-sm text-muted-foreground font-rajdhani">Time</div>
-                  <div className="font-semibold" style={{ color: selectedEvent.accentColor }}>{selectedEvent.time}</div>
+                  <div className="font-semibold" style={{ color: selectedEvent.accent_color || undefined }}>
+                    {selectedEvent.time || 'TBA'}
+                  </div>
                 </div>
-              </div>
-
-              <div>
-                <h3 className="font-orbitron text-lg font-semibold mb-3 text-secondary">Rules & Guidelines</h3>
-                <ul className="space-y-2">
-                  {selectedEvent.rules.map((rule, index) => (
-                    <li key={index} className="flex items-start gap-2 font-rajdhani text-muted-foreground">
-                      <span style={{ color: selectedEvent.accentColor }} className="mt-1">▹</span>
-                      {rule}
-                    </li>
-                  ))}
-                </ul>
               </div>
 
               {/* FAQ Section */}
               {selectedEvent.faqs && selectedEvent.faqs.length > 0 && (
                 <div className="space-y-3">
-                  <h3 className="font-orbitron text-lg font-semibold flex items-center gap-2" style={{ color: selectedEvent.accentColor }}>
-                    <HelpCircle className="w-5 h-5" style={{ filter: `drop-shadow(0 0 8px ${selectedEvent.accentColor})` }} />
+                  <h3 className="font-orbitron text-lg font-semibold flex items-center gap-2" style={{ color: selectedEvent.accent_color || undefined }}>
+                    <HelpCircle className="w-5 h-5" style={{ filter: `drop-shadow(0 0 8px ${selectedEvent.accent_color || '#00d4ff'})` }} />
                     Frequently Asked Questions
                   </h3>
                   <Accordion type="single" collapsible className="space-y-2">
@@ -221,12 +216,12 @@ const Events = () => {
                       >
                         <AccordionTrigger 
                           className="px-4 py-3 font-rajdhani font-semibold text-left hover:no-underline hover:bg-muted/20 transition-colors"
-                          style={{ color: selectedEvent.accentColor }}
+                          style={{ color: selectedEvent.accent_color || undefined }}
                         >
                           <span className="flex items-center gap-2">
                             <span 
                               className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
-                              style={{ backgroundColor: `${selectedEvent.accentColor}30`, color: selectedEvent.accentColor }}
+                              style={{ backgroundColor: `${selectedEvent.accent_color || '#00d4ff'}30`, color: selectedEvent.accent_color || undefined }}
                             >
                               {index + 1}
                             </span>
@@ -244,14 +239,14 @@ const Events = () => {
                 </div>
               )}
 
-              {selectedEvent.registrationUrl ? (
+              {selectedEvent.registration_url ? (
                 <a 
-                  href={selectedEvent.registrationUrl}
+                  href={selectedEvent.registration_url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full py-4 font-rajdhani font-bold text-lg text-white text-center
                     rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,212,255,0.5)]"
-                  style={{ backgroundColor: selectedEvent.accentColor || 'hsl(var(--primary))' }}
+                  style={{ backgroundColor: selectedEvent.accent_color || 'hsl(var(--primary))' }}
                 >
                   Register for Event
                 </a>
@@ -259,7 +254,7 @@ const Events = () => {
                 <button 
                   className="w-full py-4 font-rajdhani font-bold text-lg text-white 
                     rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,212,255,0.5)]"
-                  style={{ backgroundColor: selectedEvent.accentColor || 'hsl(var(--primary))' }}
+                  style={{ backgroundColor: selectedEvent.accent_color || 'hsl(var(--primary))' }}
                 >
                   Register for Event
                 </button>
