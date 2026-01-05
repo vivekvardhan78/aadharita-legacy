@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
 import { Sparkles } from 'lucide-react';
-import { getAadhritaBranding, type AadhritaBranding } from '@/lib/storage';
+import { useBranding } from '@/hooks/useSupabaseData';
 
 interface AadhritaLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -9,11 +8,7 @@ interface AadhritaLogoProps {
 }
 
 const AadhritaLogo = ({ size = 'md', showText = true, className = '' }: AadhritaLogoProps) => {
-  const [branding, setBranding] = useState<AadhritaBranding | null>(null);
-
-  useEffect(() => {
-    setBranding(getAadhritaBranding());
-  }, []);
+  const { branding } = useBranding();
 
   const sizeClasses = {
     sm: 'h-8 w-8',
@@ -29,11 +24,12 @@ const AadhritaLogo = ({ size = 'md', showText = true, className = '' }: Aadhrita
     xl: 'text-5xl',
   };
 
-  const glowColor = branding?.glowColor || '#ef4444';
+  const glowColor = branding?.glow_color || '#ef4444';
+  const logoUrl = branding?.hero_logo || branding?.logo_url;
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      {branding?.logoUrl ? (
+      {logoUrl ? (
         <div
           className="relative animate-pulse-slow"
           style={{
@@ -41,7 +37,7 @@ const AadhritaLogo = ({ size = 'md', showText = true, className = '' }: Aadhrita
           }}
         >
           <img
-            src={branding.logoUrl}
+            src={logoUrl}
             alt="AADHRITA Logo"
             className={`${sizeClasses[size]} object-contain`}
           />
@@ -67,7 +63,7 @@ const AadhritaLogo = ({ size = 'md', showText = true, className = '' }: Aadhrita
             textShadow: `0 0 10px ${glowColor}, 0 0 20px ${glowColor}, 0 0 30px ${glowColor}40`,
           }}
         >
-          AADHRITA
+          {branding?.fest_name || 'AADHRITA'}
         </span>
       )}
     </div>

@@ -1,20 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { X, ZoomIn } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import CollegeBrandingBar from '@/components/CollegeBrandingBar';
 import Footer from '@/components/Footer';
 import ParticleBackground from '@/components/ParticleBackground';
-import { getGallery, initializeStorage } from '@/lib/storage';
-import type { GalleryImage } from '@/lib/storage';
+import { useGallery } from '@/hooks/useSupabaseData';
 
 const Gallery = () => {
-  const [images, setImages] = useState<GalleryImage[]>([]);
-  const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
+  const { data: images, loading } = useGallery();
+  const [selectedImage, setSelectedImage] = useState<typeof images[0] | null>(null);
 
-  useEffect(() => {
-    initializeStorage();
-    setImages(getGallery());
-  }, []);
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -41,29 +43,35 @@ const Gallery = () => {
       {/* Masonry Gallery */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-            {images.map((image, index) => (
-              <div
-                key={image.id}
-                className="break-inside-avoid group relative overflow-hidden rounded-2xl cursor-pointer
-                  opacity-0 animate-scale-in glass-card p-1"
-                style={{ animationDelay: `${index * 100}ms` }}
-                onClick={() => setSelectedImage(image)}
-              >
-                <img
-                  src={image.url}
-                  alt={image.caption}
-                  className="w-full rounded-xl transition-transform duration-500 group-hover:scale-105"
-                  style={{ height: `${200 + Math.random() * 200}px`, objectFit: 'cover' }}
-                />
-                <div className="absolute inset-1 rounded-xl bg-gradient-to-t from-background via-transparent to-transparent 
-                  opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-4">
-                  <span className="font-rajdhani font-medium text-foreground">{image.caption}</span>
-                  <ZoomIn className="w-5 h-5 text-primary" />
+          {images.length > 0 ? (
+            <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
+              {images.map((image, index) => (
+                <div
+                  key={image.id}
+                  className="break-inside-avoid group relative overflow-hidden rounded-2xl cursor-pointer
+                    opacity-0 animate-scale-in glass-card p-1"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                  onClick={() => setSelectedImage(image)}
+                >
+                  <img
+                    src={image.image_url}
+                    alt={image.caption || 'Gallery image'}
+                    className="w-full rounded-xl transition-transform duration-500 group-hover:scale-105"
+                    style={{ height: `${200 + Math.random() * 200}px`, objectFit: 'cover' }}
+                  />
+                  <div className="absolute inset-1 rounded-xl bg-gradient-to-t from-background via-transparent to-transparent 
+                    opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-4">
+                    <span className="font-rajdhani font-medium text-foreground">{image.caption}</span>
+                    <ZoomIn className="w-5 h-5 text-primary" />
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <p className="font-rajdhani text-xl text-muted-foreground">Gallery coming soon!</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -83,11 +91,13 @@ const Gallery = () => {
           <div className="max-w-5xl w-full max-h-[90vh] flex flex-col items-center gap-4"
             onClick={(e) => e.stopPropagation()}>
             <img
-              src={selectedImage.url}
-              alt={selectedImage.caption}
+              src={selectedImage.image_url}
+              alt={selectedImage.caption || 'Gallery image'}
               className="max-w-full max-h-[80vh] object-contain rounded-2xl glass-card p-2"
             />
-            <p className="font-rajdhani text-lg text-muted-foreground">{selectedImage.caption}</p>
+            {selectedImage.caption && (
+              <p className="font-rajdhani text-lg text-muted-foreground">{selectedImage.caption}</p>
+            )}
           </div>
         </div>
       )}

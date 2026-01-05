@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
 import { ExternalLink, Award, Star, Medal, Heart } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import CollegeBrandingBar from '@/components/CollegeBrandingBar';
 import Footer from '@/components/Footer';
 import GlassCard from '@/components/GlassCard';
 import ParticleBackground from '@/components/ParticleBackground';
-import { getSponsors, initializeStorage, type Sponsor } from '@/lib/storage';
+import { useSponsors } from '@/hooks/useSupabaseData';
 
 const categoryConfig = {
   Title: { icon: Award, color: 'from-yellow-400 to-amber-600', glow: 'shadow-yellow-500/30' },
@@ -15,12 +14,7 @@ const categoryConfig = {
 };
 
 const Sponsors = () => {
-  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
-
-  useEffect(() => {
-    initializeStorage();
-    setSponsors(getSponsors());
-  }, []);
+  const { data: sponsors, loading } = useSponsors();
 
   const groupedSponsors = {
     Title: sponsors.filter(s => s.category === 'Title'),
@@ -28,6 +22,14 @@ const Sponsors = () => {
     Silver: sponsors.filter(s => s.category === 'Silver'),
     Supporter: sponsors.filter(s => s.category === 'Supporter'),
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -88,9 +90,9 @@ const Sponsors = () => {
                         {/* Logo */}
                         <div className={`aspect-square w-full max-w-[${category === 'Title' ? '200px' : '150px'}] 
                           mx-auto mb-4 rounded-xl overflow-hidden bg-muted/30 flex items-center justify-center`}>
-                          {sponsor.logoUrl ? (
+                          {sponsor.logo_url ? (
                             <img 
-                              src={sponsor.logoUrl} 
+                              src={sponsor.logo_url} 
                               alt={sponsor.name}
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                             />
@@ -113,9 +115,9 @@ const Sponsors = () => {
                         </span>
 
                         {/* Website Link */}
-                        {sponsor.websiteUrl && (
+                        {sponsor.website && (
                           <a 
-                            href={sponsor.websiteUrl}
+                            href={sponsor.website}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center justify-center gap-2 text-sm font-rajdhani text-primary 

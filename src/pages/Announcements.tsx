@@ -1,39 +1,40 @@
-import { useEffect, useState } from 'react';
 import { Bell, AlertCircle, Info, Star } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import CollegeBrandingBar from '@/components/CollegeBrandingBar';
 import Footer from '@/components/Footer';
 import GlassCard from '@/components/GlassCard';
 import ParticleBackground from '@/components/ParticleBackground';
-import { getAnnouncements, initializeStorage } from '@/lib/storage';
-import type { Announcement } from '@/lib/storage';
+import { useAnnouncements } from '@/hooks/useSupabaseData';
 
 const Announcements = () => {
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const { announcements, loading } = useAnnouncements();
 
-  useEffect(() => {
-    initializeStorage();
-    setAnnouncements(getAnnouncements());
-  }, []);
-
-  const getPriorityConfig = (priority: string) => {
-    switch (priority) {
-      case 'high':
-        return { icon: AlertCircle, color: 'text-destructive', bg: 'bg-destructive/10', border: 'border-destructive/30' };
-      case 'medium':
-        return { icon: Star, color: 'text-secondary', bg: 'bg-secondary/10', border: 'border-secondary/30' };
-      default:
-        return { icon: Info, color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/30' };
+  const getPriorityConfig = (priority: number | null) => {
+    const p = priority || 0;
+    if (p >= 2) {
+      return { icon: AlertCircle, color: 'text-destructive', bg: 'bg-destructive/10', border: 'border-destructive/30', label: 'high' };
+    } else if (p === 1) {
+      return { icon: Star, color: 'text-secondary', bg: 'bg-secondary/10', border: 'border-secondary/30', label: 'medium' };
     }
+    return { icon: Info, color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/30', label: 'low' };
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-IN', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
     });
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -61,16 +62,18 @@ const Announcements = () => {
       </section>
 
       {/* Scrolling Ticker */}
-      <section className="py-6 bg-primary/5 border-y border-primary/20 overflow-hidden">
-        <div className="flex animate-scroll-x">
-          {[...announcements, ...announcements, ...announcements].map((announcement, index) => (
-            <div key={`ticker-${announcement.id}-${index}`} className="flex items-center gap-6 px-6 whitespace-nowrap">
-              <span className="font-rajdhani font-semibold text-primary">🔔 {announcement.title}</span>
-              <span className="text-muted-foreground/50">•</span>
-            </div>
-          ))}
-        </div>
-      </section>
+      {announcements.length > 0 && (
+        <section className="py-6 bg-primary/5 border-y border-primary/20 overflow-hidden">
+          <div className="flex animate-scroll-x">
+            {[...announcements, ...announcements, ...announcements].map((announcement, index) => (
+              <div key={`ticker-${announcement.id}-${index}`} className="flex items-center gap-6 px-6 whitespace-nowrap">
+                <span className="font-rajdhani font-semibold text-primary">🔔 {announcement.title}</span>
+                <span className="text-muted-foreground/50">•</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Announcements List */}
       <section className="py-16">
@@ -97,7 +100,7 @@ const Announcements = () => {
                           {announcement.title}
                         </h3>
                         <span className={`px-3 py-1 text-xs font-rajdhani font-semibold rounded-full uppercase ${config.bg} ${config.color}`}>
-                          {announcement.priority}
+                          {config.label}
                         </span>
                       </div>
                       <p className="font-rajdhani text-muted-foreground mb-3">

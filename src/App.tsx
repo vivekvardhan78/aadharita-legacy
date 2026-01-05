@@ -10,7 +10,7 @@ import Announcements from "./pages/Announcements";
 import About from "./pages/About";
 import Sponsors from "./pages/Sponsors";
 import Team from "./pages/Team";
-import Admin from "./pages/Admin";
+import Auth from "./pages/Auth";
 import Panel from "./pages/Panel";
 import NotFound from "./pages/NotFound";
 
@@ -30,7 +30,7 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/sponsors" element={<Sponsors />} />
           <Route path="/team" element={<Team />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin" element={<Auth />} />
           <Route path="/panel" element={<Panel />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
