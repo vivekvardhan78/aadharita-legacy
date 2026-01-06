@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import GlassCard from '@/components/GlassCard';
 import ParticleBackground from '@/components/ParticleBackground';
 import { useSponsors } from '@/hooks/useSupabaseData';
+import { processImageUrl, handleImageError } from '@/lib/imageUtils';
 
 const categoryConfig = {
   Title: { icon: Award, color: 'from-yellow-400 to-amber-600', glow: 'shadow-yellow-500/30' },
@@ -92,9 +93,11 @@ const Sponsors = () => {
                           mx-auto mb-4 rounded-xl overflow-hidden bg-muted/30 flex items-center justify-center`}>
                           {sponsor.logo_url ? (
                             <img 
-                              src={sponsor.logo_url} 
+                              src={processImageUrl(sponsor.logo_url)} 
                               alt={sponsor.name}
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                              onError={(e) => handleImageError(e, 'sponsor')}
+                              loading="lazy"
                             />
                           ) : (
                             <div className={`w-16 h-16 rounded-full bg-gradient-to-r ${config.color} flex items-center justify-center`}>

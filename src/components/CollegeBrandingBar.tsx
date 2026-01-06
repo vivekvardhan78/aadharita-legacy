@@ -1,21 +1,26 @@
 import { MapPin, GraduationCap } from 'lucide-react';
 import { useBranding } from '@/hooks/useSupabaseData';
+import { processImageUrl, handleImageError } from '@/lib/imageUtils';
 
 const CollegeBrandingBar = () => {
   const { branding, loading } = useBranding();
 
   if (loading || !branding) return null;
 
+  const logoUrl = processImageUrl(branding.logo_url);
+
   return (
     <div className="fixed top-16 md:top-20 left-0 right-0 z-40 glass-card border-b border-border/20 rounded-none">
       <div className="container mx-auto px-4 py-2">
         <div className="flex items-center justify-center gap-4 flex-wrap">
           {/* College Logo */}
-          {branding.logo_url ? (
+          {logoUrl ? (
             <img 
-              src={branding.logo_url} 
+              src={logoUrl} 
               alt={branding.college_name}
               className="h-8 md:h-10 w-auto object-contain"
+              onError={(e) => handleImageError(e, 'logo')}
+              loading="lazy"
             />
           ) : (
             <div className="h-8 md:h-10 w-8 md:w-10 rounded-full bg-primary/20 flex items-center justify-center">

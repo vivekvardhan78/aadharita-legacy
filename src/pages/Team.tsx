@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import GlassCard from '@/components/GlassCard';
 import ParticleBackground from '@/components/ParticleBackground';
 import { useTeam, type TeamMember } from '@/hooks/useSupabaseData';
+import { processImageUrl, handleImageError } from '@/lib/imageUtils';
 
 const Team = () => {
   const { data: team, loading } = useTeam();
@@ -19,9 +20,11 @@ const Team = () => {
         ring-2 ring-primary/30 group-hover:ring-primary transition-all duration-300">
         {member.photo_url ? (
           <img 
-            src={member.photo_url} 
+            src={processImageUrl(member.photo_url)} 
             alt={member.name}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            onError={(e) => handleImageError(e, 'team')}
+            loading="lazy"
           />
         ) : (
           <div className="w-full h-full bg-muted flex items-center justify-center">

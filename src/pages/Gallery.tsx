@@ -5,6 +5,7 @@ import CollegeBrandingBar from '@/components/CollegeBrandingBar';
 import Footer from '@/components/Footer';
 import ParticleBackground from '@/components/ParticleBackground';
 import { useGallery } from '@/hooks/useSupabaseData';
+import { processImageUrl, handleImageError } from '@/lib/imageUtils';
 
 const Gallery = () => {
   const { data: images, loading } = useGallery();
@@ -54,10 +55,12 @@ const Gallery = () => {
                   onClick={() => setSelectedImage(image)}
                 >
                   <img
-                    src={image.image_url}
+                    src={processImageUrl(image.image_url)}
                     alt={image.caption || 'Gallery image'}
                     className="w-full rounded-xl transition-transform duration-500 group-hover:scale-105"
                     style={{ height: `${200 + Math.random() * 200}px`, objectFit: 'cover' }}
+                    onError={(e) => handleImageError(e, 'gallery')}
+                    loading="lazy"
                   />
                   <div className="absolute inset-1 rounded-xl bg-gradient-to-t from-background via-transparent to-transparent 
                     opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-4">
@@ -91,9 +94,10 @@ const Gallery = () => {
           <div className="max-w-5xl w-full max-h-[90vh] flex flex-col items-center gap-4"
             onClick={(e) => e.stopPropagation()}>
             <img
-              src={selectedImage.image_url}
+              src={processImageUrl(selectedImage.image_url)}
               alt={selectedImage.caption || 'Gallery image'}
               className="max-w-full max-h-[80vh] object-contain rounded-2xl glass-card p-2"
+              onError={(e) => handleImageError(e, 'gallery')}
             />
             {selectedImage.caption && (
               <p className="font-rajdhani text-lg text-muted-foreground">{selectedImage.caption}</p>
