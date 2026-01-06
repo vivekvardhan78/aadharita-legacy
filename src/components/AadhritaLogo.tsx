@@ -1,5 +1,6 @@
 import { Sparkles } from 'lucide-react';
 import { useBranding } from '@/hooks/useSupabaseData';
+import { processImageUrl, handleImageError } from '@/lib/imageUtils';
 
 interface AadhritaLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -25,7 +26,7 @@ const AadhritaLogo = ({ size = 'md', showText = true, className = '' }: Aadhrita
   };
 
   const glowColor = branding?.glow_color || '#ef4444';
-  const logoUrl = branding?.hero_logo || branding?.logo_url;
+  const logoUrl = processImageUrl(branding?.hero_logo || branding?.logo_url);
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
@@ -40,6 +41,8 @@ const AadhritaLogo = ({ size = 'md', showText = true, className = '' }: Aadhrita
             src={logoUrl}
             alt="AADHRITA Logo"
             className={`${sizeClasses[size]} object-contain`}
+            onError={(e) => handleImageError(e, 'logo')}
+            loading="lazy"
           />
         </div>
       ) : (

@@ -1,5 +1,6 @@
 import { Calendar, ExternalLink } from 'lucide-react';
 import GlassCard from './GlassCard';
+import { processImageUrl, handleImageError } from '@/lib/imageUtils';
 
 interface EventCardProps {
   event: {
@@ -19,6 +20,8 @@ interface EventCardProps {
 
 const EventCard = ({ event, index }: EventCardProps) => {
   const accentColor = event.accent_color || '#00f0ff';
+  const posterUrl = processImageUrl(event.poster_url);
+  const logoUrl = processImageUrl(event.logo_url);
 
   return (
     <GlassCard
@@ -29,14 +32,26 @@ const EventCard = ({ event, index }: EventCardProps) => {
       <div className="h-1 w-full" style={{ backgroundColor: accentColor }} />
       
       <div className="relative h-48 overflow-hidden">
-        {event.logo_url && (
+        {logoUrl && (
           <div className="absolute top-3 left-3 z-10">
-            <img src={event.logo_url} alt={`${event.name} logo`} className="h-10 w-10 object-contain bg-background/80 backdrop-blur-sm rounded-lg p-1" />
+            <img 
+              src={logoUrl} 
+              alt={`${event.name} logo`} 
+              className="h-10 w-10 object-contain bg-background/80 backdrop-blur-sm rounded-lg p-1"
+              onError={(e) => handleImageError(e, 'logo')}
+              loading="lazy"
+            />
           </div>
         )}
         
-        {event.poster_url ? (
-          <img src={event.poster_url} alt={event.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+        {posterUrl ? (
+          <img 
+            src={posterUrl} 
+            alt={event.name} 
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            onError={(e) => handleImageError(e, 'event')}
+            loading="lazy"
+          />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
             <span className="font-orbitron text-2xl font-bold text-muted-foreground/50">{event.name.charAt(0)}</span>
