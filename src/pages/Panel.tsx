@@ -520,10 +520,11 @@ const Panel = () => {
         {/* Mobile Nav */}
         <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 glass-card rounded-none border-t border-border/30 p-2">
           <div className="flex justify-around overflow-x-auto">
-            {tabs.slice(0, 5).map(tab => (
+            {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
+                title={tab.label}
                 className={`p-2 rounded-xl flex-shrink-0 ${activeTab === tab.id ? 'text-primary bg-primary/10' : 'text-muted-foreground'}`}
               >
                 <tab.icon className="w-5 h-5" />

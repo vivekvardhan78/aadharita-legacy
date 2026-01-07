@@ -34,8 +34,8 @@ export const convertGoogleDriveUrl = (url: string): string => {
   }
 
   if (fileId) {
-    // Use Google's thumbnail API for better reliability
-    return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
+    // Use the embeddable viewer endpoint (works more reliably than /thumbnail for some shared files)
+    return `https://drive.google.com/uc?export=view&id=${fileId}`;
   }
 
   return url;
