@@ -444,13 +444,25 @@ const Panel = () => {
     }
   };
 
-  // Loading state
-  if (authLoading || loading) {
+  // Auth / permission gates
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
           <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto" />
-          <p className="font-rajdhani text-muted-foreground">Loading admin panel...</p>
+          <p className="font-rajdhani text-muted-foreground">Checking session...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If not logged in, the effect above will redirect to /auth.
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto" />
+          <p className="font-rajdhani text-muted-foreground">Redirecting to login...</p>
         </div>
       </div>
     );
@@ -465,9 +477,17 @@ const Panel = () => {
             <X className="w-8 h-8 text-destructive" />
           </div>
           <h1 className="font-orbitron text-xl font-bold text-foreground mb-2">Access Denied</h1>
-          <p className="font-rajdhani text-muted-foreground mb-6">
-            You don't have admin privileges. Contact the administrator to get access.
+          <p className="font-rajdhani text-muted-foreground mb-4">
+            Your account doesn’t have admin privileges yet.
           </p>
+          <div className="mb-6 text-left space-y-2">
+            <div className="font-rajdhani text-sm text-muted-foreground">
+              <span className="text-foreground">Email:</span> {user.email}
+            </div>
+            <div className="font-rajdhani text-sm text-muted-foreground break-all">
+              <span className="text-foreground">User ID:</span> {user.id}
+            </div>
+          </div>
           <button
             onClick={handleLogout}
             className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-rajdhani font-semibold"
@@ -475,6 +495,18 @@ const Panel = () => {
             Sign Out
           </button>
         </GlassCard>
+      </div>
+    );
+  }
+
+  // Data loading state (admins only)
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto" />
+          <p className="font-rajdhani text-muted-foreground">Loading admin panel...</p>
+        </div>
       </div>
     );
   }
