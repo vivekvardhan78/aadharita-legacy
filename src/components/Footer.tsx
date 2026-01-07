@@ -57,7 +57,7 @@ const Footer = () => {
             <ul className="space-y-3 font-rajdhani">
               <li className="flex items-center gap-2 text-muted-foreground">
                 <MapPin className="w-4 h-4 text-primary" />
-                <span>NIT Delhi, New Delhi, India</span>
+                <span>Maharaj Vijayram Gajapathi Raj College of Engineering, Vizianagaram, Andhra pradesh, India</span>
               </li>
               <li className="flex items-center gap-2 text-muted-foreground">
                 <Mail className="w-4 h-4 text-primary" />
