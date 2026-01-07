@@ -16,26 +16,26 @@ export const convertGoogleDriveUrl = (url: string): string => {
   let fileId = '';
 
   // Format: https://drive.google.com/file/d/FILE_ID/view
-  const fileMatch = url.match(/\/file\/d\/([^/]+)/);
+  const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
   if (fileMatch) {
     fileId = fileMatch[1];
   }
 
   // Format: https://drive.google.com/open?id=FILE_ID
-  const openMatch = url.match(/[?&]id=([^&]+)/);
+  const openMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
   if (!fileId && openMatch) {
     fileId = openMatch[1];
   }
 
   // Format: https://docs.google.com/uc?id=FILE_ID
-  const ucMatch = url.match(/uc\?.*id=([^&]+)/);
+  const ucMatch = url.match(/uc\?.*id=([a-zA-Z0-9_-]+)/);
   if (!fileId && ucMatch) {
     fileId = ucMatch[1];
   }
 
   if (fileId) {
-    // Use the embeddable viewer endpoint (works more reliably than /thumbnail for some shared files)
-    return `https://drive.google.com/uc?export=view&id=${fileId}`;
+    // Use lh3.googleusercontent.com which is the most reliable for public images
+    return `https://lh3.googleusercontent.com/d/${fileId}`;
   }
 
   return url;
