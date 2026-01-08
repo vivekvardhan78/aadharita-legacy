@@ -15,6 +15,12 @@ export interface Branding {
   hero_date: string | null;
   hero_venue: string | null;
   hero_logo: string | null;
+  // New hero CMS fields
+  fest_intro: string | null;
+  fest_theme: string | null;
+  fest_dates: string | null;
+  fest_highlights: string | null;
+  countdown_datetime: string | null;
 }
 
 export interface Event {
@@ -28,6 +34,7 @@ export interface Event {
   logo_url: string | null;
   accent_color: string | null;
   registration_url: string | null;
+  enable_registration: boolean;
 }
 
 export interface FAQ {
@@ -42,6 +49,8 @@ export interface GalleryImage {
   id: string;
   image_url: string;
   caption: string | null;
+  year: string | null;
+  event_name: string | null;
 }
 
 export interface Sponsor {
@@ -79,6 +88,8 @@ export interface About {
   stat2: string | null;
   stat3: string | null;
   stat4: string | null;
+  about_aadhrita: string | null;
+  about_mvgr: string | null;
 }
 
 // Branding hook

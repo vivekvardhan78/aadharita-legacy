@@ -1,4 +1,4 @@
-import { Calendar, ExternalLink } from 'lucide-react';
+import { Calendar, ExternalLink, Clock } from 'lucide-react';
 import GlassCard from './GlassCard';
 import { processImageUrl, handleImageError } from '@/lib/imageUtils';
 
@@ -14,6 +14,7 @@ interface EventCardProps {
     logo_url?: string | null;
     accent_color?: string | null;
     registration_url?: string | null;
+    enable_registration?: boolean;
   };
   index: number;
 }
@@ -22,6 +23,8 @@ const EventCard = ({ event, index }: EventCardProps) => {
   const accentColor = event.accent_color || '#00f0ff';
   const posterUrl = processImageUrl(event.poster_url);
   const logoUrl = processImageUrl(event.logo_url);
+  const isRegistrationEnabled = event.enable_registration !== false;
+  const hasRegistrationUrl = !!event.registration_url;
 
   return (
     <GlassCard
@@ -79,14 +82,28 @@ const EventCard = ({ event, index }: EventCardProps) => {
           {event.description || 'Event details coming soon...'}
         </p>
 
-        {event.registration_url ? (
-          <a href={event.registration_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}
-            className="inline-flex items-center gap-2 px-4 py-2 font-rajdhani font-semibold text-sm text-white rounded-lg transition-all duration-300 hover:scale-105 animate-pulse-slow"
-            style={{ backgroundColor: accentColor, boxShadow: `0 0 15px ${accentColor}40` }}>
+        {isRegistrationEnabled && hasRegistrationUrl ? (
+          <a 
+            href={event.registration_url!} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center gap-2 px-4 py-2 font-rajdhani font-semibold text-sm text-white rounded-lg 
+              transition-all duration-300 hover:scale-105 animate-glow-button"
+            style={{ 
+              backgroundColor: accentColor, 
+              boxShadow: `0 0 20px ${accentColor}50, 0 0 40px ${accentColor}30` 
+            }}
+          >
             REGISTER NOW <ExternalLink className="w-4 h-4" />
           </a>
         ) : (
-          <button className="px-4 py-2 font-rajdhani font-semibold text-sm rounded-lg" style={{ backgroundColor: `${accentColor}20`, color: accentColor }}>
+          <button 
+            className="px-4 py-2 font-rajdhani font-semibold text-sm rounded-lg flex items-center gap-2" 
+            style={{ backgroundColor: `${accentColor}20`, color: accentColor }}
+            disabled
+          >
+            <Clock className="w-4 h-4" />
             Coming Soon
           </button>
         )}

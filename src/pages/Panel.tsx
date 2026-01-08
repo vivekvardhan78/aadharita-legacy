@@ -161,6 +161,11 @@ const Panel = () => {
           hero_date: branding.hero_date,
           hero_venue: branding.hero_venue,
           hero_logo: branding.hero_logo,
+          fest_intro: (branding as any).fest_intro,
+          fest_theme: (branding as any).fest_theme,
+          fest_dates: (branding as any).fest_dates,
+          fest_highlights: (branding as any).fest_highlights,
+          countdown_datetime: (branding as any).countdown_datetime,
         })
         .eq('id', branding.id);
 
@@ -432,6 +437,8 @@ const Panel = () => {
           stat2: about.stat2,
           stat3: about.stat3,
           stat4: about.stat4,
+          about_aadhrita: (about as any).about_aadhrita,
+          about_mvgr: (about as any).about_mvgr,
         })
         .eq('id', about.id);
 
