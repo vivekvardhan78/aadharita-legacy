@@ -665,7 +665,69 @@ const Panel = () => {
                 </div>
                 
                 <div className="border-t border-border/30 pt-4 mt-4">
-                  <h3 className="font-orbitron text-lg font-semibold mb-4 text-foreground">Hero Section</h3>
+                  <h3 className="font-orbitron text-lg font-semibold mb-4 text-foreground flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-primary" />
+                    Hero Section CMS
+                  </h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block font-rajdhani text-sm text-muted-foreground mb-2">Fest Introduction</label>
+                      <textarea
+                        placeholder="Welcome message displayed above the logo..."
+                        value={(branding as any).fest_intro || ''}
+                        onChange={e => setBranding({ ...branding, fest_intro: e.target.value } as any)}
+                        className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani h-20"
+                      />
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block font-rajdhani text-sm text-muted-foreground mb-2">Fest Theme</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., Innovation Beyond Boundaries"
+                          value={(branding as any).fest_theme || ''}
+                          onChange={e => setBranding({ ...branding, fest_theme: e.target.value } as any)}
+                          className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-rajdhani text-sm text-muted-foreground mb-2">Fest Dates Display</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., March 15-17, 2026"
+                          value={(branding as any).fest_dates || ''}
+                          onChange={e => setBranding({ ...branding, fest_dates: e.target.value } as any)}
+                          className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block font-rajdhani text-sm text-muted-foreground mb-2">Fest Highlights (comma-separated)</label>
+                      <input
+                        type="text"
+                        placeholder="Technical Events, Cultural Shows, Workshops, Competitions"
+                        value={(branding as any).fest_highlights || ''}
+                        onChange={e => setBranding({ ...branding, fest_highlights: e.target.value } as any)}
+                        className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-rajdhani text-sm text-muted-foreground mb-2">
+                        Countdown Target Date & Time
+                        <span className="text-xs text-primary ml-2">(Controls the live countdown timer)</span>
+                      </label>
+                      <input
+                        type="datetime-local"
+                        value={(branding as any).countdown_datetime ? new Date((branding as any).countdown_datetime).toISOString().slice(0, 16) : ''}
+                        onChange={e => setBranding({ ...branding, countdown_datetime: e.target.value ? new Date(e.target.value).toISOString() : null } as any)}
+                        className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-border/30 pt-4 mt-4">
+                  <h3 className="font-orbitron text-lg font-semibold mb-4 text-foreground">Hero Display Settings</h3>
                   <div className="space-y-4">
                     <div>
                       <label className="block font-rajdhani text-sm text-muted-foreground mb-2">Hero Title</label>
@@ -687,7 +749,7 @@ const Panel = () => {
                     </div>
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block font-rajdhani text-sm text-muted-foreground mb-2">Hero Date</label>
+                        <label className="block font-rajdhani text-sm text-muted-foreground mb-2">Hero Date Badge</label>
                         <input
                           type="text"
                           value={branding.hero_date || ''}
@@ -1414,17 +1476,59 @@ const Panel = () => {
           {/* About Management */}
           {activeTab === 'about' && about && (
             <div className="space-y-6">
-              <h2 className="font-orbitron text-2xl font-bold gradient-text">About Page</h2>
+              <h2 className="font-orbitron text-2xl font-bold gradient-text">About Page Content</h2>
+              
+              {/* About AADHRITA */}
               <GlassCard className="p-6 space-y-4">
+                <h3 className="font-orbitron text-lg font-semibold text-primary flex items-center gap-2">
+                  <Sparkles className="w-5 h-5" />
+                  About AADHRITA
+                </h3>
                 <div>
-                  <label className="block font-rajdhani text-sm text-muted-foreground mb-2">About Description</label>
+                  <label className="block font-rajdhani text-sm text-muted-foreground mb-2">About AADHRITA (Main fest description)</label>
+                  <textarea
+                    placeholder="Describe AADHRITA fest..."
+                    value={(about as any).about_aadhrita || ''}
+                    onChange={e => setAbout({ ...about, about_aadhrita: e.target.value } as any)}
+                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani h-32"
+                  />
+                </div>
+              </GlassCard>
+
+              {/* About MVGR */}
+              <GlassCard className="p-6 space-y-4">
+                <h3 className="font-orbitron text-lg font-semibold text-secondary flex items-center gap-2">
+                  <Building2 className="w-5 h-5" />
+                  About MVGR College
+                </h3>
+                <div>
+                  <label className="block font-rajdhani text-sm text-muted-foreground mb-2">About MVGR (College description)</label>
+                  <textarea
+                    placeholder="Describe MVGR College..."
+                    value={(about as any).about_mvgr || ''}
+                    onChange={e => setAbout({ ...about, about_mvgr: e.target.value } as any)}
+                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani h-32"
+                  />
+                </div>
+              </GlassCard>
+
+              {/* Legacy About (for backwards compatibility) */}
+              <GlassCard className="p-6 space-y-4">
+                <h3 className="font-orbitron text-lg font-semibold text-foreground">Legacy About Description</h3>
+                <div>
+                  <label className="block font-rajdhani text-sm text-muted-foreground mb-2">General About (fallback)</label>
                   <textarea
                     placeholder="About the fest..."
                     value={about.about || ''}
                     onChange={e => setAbout({ ...about, about: e.target.value })}
-                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani h-32"
+                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani h-24"
                   />
                 </div>
+              </GlassCard>
+
+              {/* Mission & Vision */}
+              <GlassCard className="p-6 space-y-4">
+                <h3 className="font-orbitron text-lg font-semibold text-foreground">Mission & Vision</h3>
                 <div>
                   <label className="block font-rajdhani text-sm text-muted-foreground mb-2">Mission</label>
                   <textarea
@@ -1443,6 +1547,11 @@ const Panel = () => {
                     className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani h-24"
                   />
                 </div>
+              </GlassCard>
+
+              {/* Stats */}
+              <GlassCard className="p-6 space-y-4">
+                <h3 className="font-orbitron text-lg font-semibold text-foreground">Highlight Statistics</h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="block font-rajdhani text-sm text-muted-foreground mb-2">Stat 1 (e.g., 5000+ Participants)</label>
@@ -1481,15 +1590,16 @@ const Panel = () => {
                     />
                   </div>
                 </div>
-                <button 
-                  onClick={saveAbout} 
-                  disabled={saving}
-                  className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-rajdhani font-semibold disabled:opacity-50"
-                >
-                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                  Save About
-                </button>
               </GlassCard>
+
+              <button 
+                onClick={saveAbout} 
+                disabled={saving}
+                className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-rajdhani font-semibold disabled:opacity-50"
+              >
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                Save About Page
+              </button>
             </div>
           )}
         </main>
