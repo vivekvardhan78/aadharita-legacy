@@ -17,6 +17,8 @@ export type Database = {
       about: {
         Row: {
           about: string | null
+          about_aadhrita: string | null
+          about_mvgr: string | null
           created_at: string
           id: string
           mission: string | null
@@ -29,6 +31,8 @@ export type Database = {
         }
         Insert: {
           about?: string | null
+          about_aadhrita?: string | null
+          about_mvgr?: string | null
           created_at?: string
           id?: string
           mission?: string | null
@@ -41,6 +45,8 @@ export type Database = {
         }
         Update: {
           about?: string | null
+          about_aadhrita?: string | null
+          about_mvgr?: string | null
           created_at?: string
           id?: string
           mission?: string | null
@@ -83,8 +89,13 @@ export type Database = {
       branding: {
         Row: {
           college_name: string
+          countdown_datetime: string | null
           created_at: string
+          fest_dates: string | null
+          fest_highlights: string | null
+          fest_intro: string | null
           fest_name: string
+          fest_theme: string | null
           glow_color: string | null
           hero_date: string | null
           hero_logo: string | null
@@ -98,8 +109,13 @@ export type Database = {
         }
         Insert: {
           college_name?: string
+          countdown_datetime?: string | null
           created_at?: string
+          fest_dates?: string | null
+          fest_highlights?: string | null
+          fest_intro?: string | null
           fest_name?: string
+          fest_theme?: string | null
           glow_color?: string | null
           hero_date?: string | null
           hero_logo?: string | null
@@ -113,8 +129,13 @@ export type Database = {
         }
         Update: {
           college_name?: string
+          countdown_datetime?: string | null
           created_at?: string
+          fest_dates?: string | null
+          fest_highlights?: string | null
+          fest_intro?: string | null
           fest_name?: string
+          fest_theme?: string | null
           glow_color?: string | null
           hero_date?: string | null
           hero_logo?: string | null
@@ -135,6 +156,7 @@ export type Database = {
           created_at: string
           date: string | null
           description: string | null
+          enable_registration: boolean | null
           id: string
           logo_url: string | null
           name: string
@@ -149,6 +171,7 @@ export type Database = {
           created_at?: string
           date?: string | null
           description?: string | null
+          enable_registration?: boolean | null
           id?: string
           logo_url?: string | null
           name: string
@@ -163,6 +186,7 @@ export type Database = {
           created_at?: string
           date?: string | null
           description?: string | null
+          enable_registration?: boolean | null
           id?: string
           logo_url?: string | null
           name?: string
@@ -212,20 +236,26 @@ export type Database = {
         Row: {
           caption: string | null
           created_at: string
+          event_name: string | null
           id: string
           image_url: string
+          year: string | null
         }
         Insert: {
           caption?: string | null
           created_at?: string
+          event_name?: string | null
           id?: string
           image_url: string
+          year?: string | null
         }
         Update: {
           caption?: string | null
           created_at?: string
+          event_name?: string | null
           id?: string
           image_url?: string
+          year?: string | null
         }
         Relationships: []
       }

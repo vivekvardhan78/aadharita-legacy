@@ -168,6 +168,38 @@
     animation: scroll-x 30s linear infinite;
   }
 
+  .animate-logo-pulse {
+    animation: logo-pulse 3s ease-in-out infinite;
+  }
+
+  .animate-neon-flicker {
+    animation: neon-flicker 4s ease-in-out infinite;
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  .animate-glow-button {
+    animation: glow-button 2s ease-in-out infinite;
+  }
+
+  .animate-pulse-neon {
+    animation: pulse-neon 2s ease-in-out infinite;
+  }
+
+  .animate-fade-in-section {
+    animation: fade-in-section 0.8s ease-out forwards;
+  }
+
+  .glass-depth {
+    box-shadow: 
+      0 8px 32px hsl(222 47% 0% / 0.5),
+      0 0 60px hsl(var(--neon-cyan) / 0.1),
+      inset 0 1px 0 hsl(180 100% 95% / 0.1),
+      inset 0 -1px 0 hsl(222 47% 0% / 0.3);
+  }
+
   .bg-grid-pattern {
     background-image: 
       linear-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px),
@@ -209,6 +241,76 @@
   }
   100% {
     transform: translateX(-50%);
+  }
+}
+
+@keyframes logo-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px hsl(var(--neon-cyan) / 0.5)) drop-shadow(0 0 20px hsl(var(--neon-cyan) / 0.3));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 20px hsl(var(--neon-cyan) / 0.8)) drop-shadow(0 0 40px hsl(var(--neon-cyan) / 0.5));
+    transform: scale(1.02);
+  }
+}
+
+@keyframes neon-flicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  93% {
+    opacity: 0.8;
+  }
+  94% {
+    opacity: 1;
+  }
+  96% {
+    opacity: 0.9;
+  }
+  97% {
+    opacity: 1;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(var(--neon-cyan) / 0.5);
+  }
+  50% {
+    box-shadow: 0 0 30px hsl(var(--neon-cyan) / 0.8), 0 0 50px hsl(var(--neon-cyan) / 0.4);
+  }
+}
+
+@keyframes glow-button {
+  0%, 100% {
+    box-shadow: 0 0 15px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 25px currentColor, 0 0 40px currentColor;
+  }
+}
+
+@keyframes pulse-neon {
+  0%, 100% {
+    box-shadow: 0 0 10px currentColor, inset 0 0 10px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 20px currentColor, inset 0 0 20px currentColor;
+  }
+}
+
+@keyframes fade-in-section {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

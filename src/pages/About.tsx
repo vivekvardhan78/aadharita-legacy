@@ -1,14 +1,15 @@
-import { Target, Eye, Sparkles, Award, Lightbulb, Users, Code, Heart } from 'lucide-react';
+import { Target, Eye, Sparkles, Award, Lightbulb, Users, Code, Heart, Building2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
 import CollegeBrandingBar from '@/components/CollegeBrandingBar';
 import Footer from '@/components/Footer';
 import GlassCard from '@/components/GlassCard';
 import ParticleBackground from '@/components/ParticleBackground';
-import { useAbout } from '@/hooks/useSupabaseData';
+import { useAbout, useBranding } from '@/hooks/useSupabaseData';
 
 const About = () => {
   const { about, loading } = useAbout();
+  const { branding } = useBranding();
 
   const values = [
     { icon: Lightbulb, title: 'Innovation', description: 'Pushing boundaries and exploring new frontiers in technology.' },
@@ -51,7 +52,7 @@ const About = () => {
             </h1>
             <p className="font-rajdhani text-lg text-muted-foreground opacity-0 animate-fade-in"
               style={{ animationDelay: '0.2s' }}>
-              {about?.about || 'AADHRITA is the annual technical and cultural festival bringing together the brightest minds.'}
+              Discover the vision behind India's most exciting technical fest.
             </p>
           </div>
         </div>
@@ -75,30 +76,78 @@ const About = () => {
         </div>
       </section>
 
+      {/* About AADHRITA */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <GlassCard className="p-8 md:p-12 opacity-0 animate-fade-in-section glass-depth">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 rounded-xl bg-primary/10">
+                  <Sparkles className="w-8 h-8 text-primary" />
+                </div>
+                <h2 className="font-orbitron text-2xl md:text-3xl font-bold neon-text">About AADHRITA</h2>
+              </div>
+              <div className="font-rajdhani text-lg text-muted-foreground leading-relaxed text-center md:text-left">
+                {about?.about_aadhrita || about?.about || 
+                  'AADHRITA is the flagship national-level technical fest that brings together the brightest minds from across the country. With a legacy of innovation and excellence, we provide a platform for students to showcase their skills, compete with peers, and learn from industry experts.'}
+              </div>
+            </GlassCard>
+          </div>
+        </div>
+      </section>
+
+      {/* Neon Separator */}
+      <div className="h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+
+      {/* About MVGR */}
+      <section className="py-20 bg-card/10">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <GlassCard className="p-8 md:p-12 opacity-0 animate-fade-in-section glass-depth">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 rounded-xl bg-secondary/10">
+                  <Building2 className="w-8 h-8 text-secondary" />
+                </div>
+                <h2 className="font-orbitron text-2xl md:text-3xl font-bold neon-text-purple">
+                  About {branding?.college_name?.split(' ').slice(0, 3).join(' ') || 'MVGR College'}
+                </h2>
+              </div>
+              <div className="font-rajdhani text-lg text-muted-foreground leading-relaxed text-center md:text-left">
+                {about?.about_mvgr || 
+                  'Maharaj Vijayaram Gajapathi Raj College of Engineering is one of the premier engineering institutions in Andhra Pradesh. Established with a vision to produce world-class engineers, the college has consistently maintained high standards in technical education and research. Located in Vizianagaram, MVGR is known for its state-of-the-art infrastructure, dedicated faculty, and vibrant campus life.'}
+              </div>
+            </GlassCard>
+          </div>
+        </div>
+      </section>
+
+      {/* Neon Separator */}
+      <div className="h-px bg-gradient-to-r from-transparent via-secondary/50 to-transparent" />
+
       {/* Mission & Vision */}
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <GlassCard className="p-8 opacity-0 animate-slide-up" style={{ animationDelay: '0.1s' } as React.CSSProperties}>
+            <GlassCard className="p-8 opacity-0 animate-slide-up glass-depth" style={{ animationDelay: '0.1s' } as React.CSSProperties}>
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-3 rounded-xl bg-primary/10">
                   <Target className="w-6 h-6 text-primary" />
                 </div>
                 <h2 className="font-orbitron text-2xl font-bold neon-text">Our Mission</h2>
               </div>
-              <p className="font-rajdhani text-muted-foreground leading-relaxed">
+              <p className="font-rajdhani text-muted-foreground leading-relaxed text-center md:text-left">
                 {about?.mission || 'To foster innovation, creativity, and technical excellence among students while providing a platform for showcasing cutting-edge technologies.'}
               </p>
             </GlassCard>
 
-            <GlassCard className="p-8 opacity-0 animate-slide-up" style={{ animationDelay: '0.2s' } as React.CSSProperties}>
+            <GlassCard className="p-8 opacity-0 animate-slide-up glass-depth" style={{ animationDelay: '0.2s' } as React.CSSProperties}>
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-3 rounded-xl bg-secondary/10">
                   <Eye className="w-6 h-6 text-secondary" />
                 </div>
                 <h2 className="font-orbitron text-2xl font-bold neon-text-purple">Our Vision</h2>
               </div>
-              <p className="font-rajdhani text-muted-foreground leading-relaxed">
+              <p className="font-rajdhani text-muted-foreground leading-relaxed text-center md:text-left">
                 {about?.vision || 'To become the premier technical fest in India, inspiring the next generation of engineers, scientists, and innovators.'}
               </p>
             </GlassCard>
@@ -135,7 +184,7 @@ const About = () => {
       {/* Team CTA */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <GlassCard className="p-8 md:p-12 text-center max-w-3xl mx-auto">
+          <GlassCard className="p-8 md:p-12 text-center max-w-3xl mx-auto glass-depth">
             <h2 className="font-orbitron text-2xl md:text-3xl font-bold mb-4 neon-text">
               Meet Our Team
             </h2>
