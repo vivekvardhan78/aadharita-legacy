@@ -87,7 +87,7 @@ const About = () => {
                 </div>
                 <h2 className="font-orbitron text-2xl md:text-3xl font-bold neon-text">About AADHRITA</h2>
               </div>
-              <div className="font-rajdhani text-lg text-muted-foreground leading-relaxed text-center md:text-left">
+              <div className="font-rajdhani text-lg text-muted-foreground leading-relaxed text-left md:text-center">
                 {about?.about_aadhrita || about?.about || 
                   'AADHRITA is the flagship national-level technical fest that brings together the brightest minds from across the country. With a legacy of innovation and excellence, we provide a platform for students to showcase their skills, compete with peers, and learn from industry experts.'}
               </div>
@@ -112,7 +112,7 @@ const About = () => {
                   About {branding?.college_name?.split(' ').slice(0, 3).join(' ') || 'MVGR College'}
                 </h2>
               </div>
-              <div className="font-rajdhani text-lg text-muted-foreground leading-relaxed text-center md:text-left">
+              <div className="font-rajdhani text-lg text-muted-foreground leading-relaxed text-left md:text-center">
                 {about?.about_mvgr || 
                   'Maharaj Vijayaram Gajapathi Raj College of Engineering is one of the premier engineering institutions in Andhra Pradesh. Established with a vision to produce world-class engineers, the college has consistently maintained high standards in technical education and research. Located in Vizianagaram, MVGR is known for its state-of-the-art infrastructure, dedicated faculty, and vibrant campus life.'}
               </div>
@@ -135,7 +135,7 @@ const About = () => {
                 </div>
                 <h2 className="font-orbitron text-2xl font-bold neon-text">Our Mission</h2>
               </div>
-              <p className="font-rajdhani text-muted-foreground leading-relaxed text-center md:text-left">
+              <p className="font-rajdhani text-muted-foreground leading-relaxed text-left md:text-center">
                 {about?.mission || 'To foster innovation, creativity, and technical excellence among students while providing a platform for showcasing cutting-edge technologies.'}
               </p>
             </GlassCard>
@@ -147,7 +147,7 @@ const About = () => {
                 </div>
                 <h2 className="font-orbitron text-2xl font-bold neon-text-purple">Our Vision</h2>
               </div>
-              <p className="font-rajdhani text-muted-foreground leading-relaxed text-center md:text-left">
+              <p className="font-rajdhani text-muted-foreground leading-relaxed text-left md:text-center">
                 {about?.vision || 'To become the premier technical fest in India, inspiring the next generation of engineers, scientists, and innovators.'}
               </p>
             </GlassCard>
