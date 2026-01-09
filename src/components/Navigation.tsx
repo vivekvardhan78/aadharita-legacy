@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import AadhritaLogo from './AadhritaLogo';
 
@@ -16,6 +16,7 @@ const navLinks = [
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/30 rounded-none">
@@ -48,7 +49,9 @@ const Navigation = () => {
 
           {/* Register Button - Desktop */}
           <div className="hidden lg:block">
-            <button className="px-6 py-2 font-rajdhani font-semibold text-sm bg-primary text-primary-foreground rounded-lg
+            <button 
+              onClick={() => navigate('/events')}
+              className="px-6 py-2 font-rajdhani font-semibold text-sm bg-primary text-primary-foreground rounded-lg
               transition-all duration-300 hover:shadow-[0_0_20px_hsl(var(--neon-cyan)/0.5)] 
               hover:scale-105 active:scale-95">
               Register Now
@@ -84,7 +87,9 @@ const Navigation = () => {
                 {link.label}
               </Link>
             ))}
-            <button className="mt-2 px-4 py-3 font-rajdhani font-semibold bg-primary text-primary-foreground rounded-lg
+            <button 
+              onClick={() => { setIsOpen(false); navigate('/events'); }}
+              className="mt-2 px-4 py-3 font-rajdhani font-semibold bg-primary text-primary-foreground rounded-lg
               transition-all duration-300 hover:shadow-[0_0_20px_hsl(var(--neon-cyan)/0.5)]">
               Register Now
             </button>
