@@ -78,7 +78,7 @@ const Footer = () => {
             </p>
             <div className="flex gap-6 text-sm font-rajdhani">
               <Link to="/admin" className="text-muted-foreground/50 hover:text-muted-foreground transition-colors">
-                Admin
+                
               </Link>
               <span className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
                 Privacy Policy
