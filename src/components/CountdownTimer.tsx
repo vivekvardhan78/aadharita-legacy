@@ -51,7 +51,7 @@ const CountdownTimer = ({ targetDate, glowColor = '#00f0ff' }: CountdownTimerPro
       {timeUnits.map((unit, index) => (
         <div key={unit.label} className="flex items-center gap-2 sm:gap-4">
           <div 
-            className="glass-card p-3 sm:p-4 min-w-[60px] sm:min-w-[80px] text-center animate-pulse-neon"
+            className="glass-card p-3 sm:p-5 w-[70px] sm:w-[90px] md:w-[100px] text-center animate-pulse-neon"
             style={{
               boxShadow: `0 0 20px ${glowColor}30, inset 0 0 20px ${glowColor}10`,
               borderColor: `${glowColor}50`,
