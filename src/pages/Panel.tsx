@@ -50,6 +50,8 @@ const Panel = () => {
   const [editingTeamMember, setEditingTeamMember] = useState<EditingTeamMember | null>(null);
   const [newGalleryUrl, setNewGalleryUrl] = useState('');
   const [newGalleryCaption, setNewGalleryCaption] = useState('');
+  const [newGalleryYear, setNewGalleryYear] = useState('2026');
+  const [newGalleryEventName, setNewGalleryEventName] = useState('');
 
   // Auth check
   useEffect(() => {
@@ -308,11 +310,15 @@ const Panel = () => {
       const { error } = await supabase.from('gallery').insert({
         image_url: newGalleryUrl,
         caption: newGalleryCaption || null,
+        year: newGalleryYear || '2026',
+        event_name: newGalleryEventName || null,
       });
       if (error) throw error;
       await loadGallery();
       setNewGalleryUrl('');
       setNewGalleryCaption('');
+      setNewGalleryYear('2026');
+      setNewGalleryEventName('');
       toast({ title: 'Image added!' });
     } catch (err) {
       toast({ title: 'Error adding image', variant: 'destructive' });
@@ -1061,7 +1067,7 @@ const Panel = () => {
               <h2 className="font-orbitron text-2xl font-bold gradient-text">Manage Gallery</h2>
               
               <GlassCard className="p-6 space-y-4">
-                <div className="grid md:grid-cols-3 gap-4">
+                <div className="grid md:grid-cols-2 gap-4">
                   <input
                     type="text"
                     placeholder="Image URL"
@@ -1075,6 +1081,20 @@ const Panel = () => {
                     value={newGalleryCaption}
                     onChange={e => setNewGalleryCaption(e.target.value)}
                     className="px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Year (e.g., 2026)"
+                    value={newGalleryYear}
+                    onChange={e => setNewGalleryYear(e.target.value)}
+                    className="px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Event Name (e.g., Hackathon)"
+                    value={newGalleryEventName}
+                    onChange={e => setNewGalleryEventName(e.target.value)}
+                    className="md:col-span-2 px-4 py-3 bg-muted/50 border border-border rounded-xl font-rajdhani"
                   />
                 </div>
                 <button 
@@ -1096,7 +1116,21 @@ const Panel = () => {
                       className="w-full h-40 object-cover rounded-xl"
                       onError={(e) => handleImageError(e, 'gallery')}
                     />
-                    <p className="font-rajdhani text-sm text-muted-foreground mt-2 px-2">{image.caption}</p>
+                    <div className="mt-2 px-2">
+                      <p className="font-rajdhani text-sm text-muted-foreground">{image.caption}</p>
+                      <div className="flex gap-2 mt-1">
+                        {image.year && (
+                          <span className="px-2 py-0.5 text-xs font-rajdhani bg-primary/20 text-primary rounded-full">
+                            {image.year}
+                          </span>
+                        )}
+                        {image.event_name && (
+                          <span className="px-2 py-0.5 text-xs font-rajdhani bg-secondary/20 text-secondary rounded-full truncate">
+                            {image.event_name}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                     <button
                       onClick={() => deleteGalleryImage(image.id)}
                       className="absolute top-4 right-4 p-2 bg-destructive/80 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
